@@ -1,0 +1,47 @@
+pluginManagement {
+  includeBuild("../node_modules/@react-native/gradle-plugin")
+}
+
+plugins {
+  id("com.facebook.react.settings")
+}
+extensions.configure(com.facebook.react.ReactSettingsExtension){
+  ex -> ex.autolinkLibrariesFromCommand()
+}
+
+def localPropertiesFile = new File(rootDir, "local.properties")
+def localProperties = new Properties()
+
+if (localPropertiesFile.exists()) {
+  localPropertiesFile.withReader("UTF-8") { reader ->
+    localProperties.load(reader)
+  }
+}
+
+
+
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositories {
+        google()
+        mavenCentral()
+        // Mapbox Maven repository
+        maven {
+            url = uri("https://api.mapbox.com/downloads/v2/releases/maven")
+            authentication {
+              basic(BasicAuthentication)
+            }
+            credentials {
+              username = "mapbox"
+              password = localProperties.getProperty("MAPBOX_SECRET_KEY")
+            }
+        }
+    }
+}
+
+
+
+rootProject.name = 'rnmapboxtoolkit.example'
+include ':app'
+includeBuild('../node_modules/@react-native/gradle-plugin')
