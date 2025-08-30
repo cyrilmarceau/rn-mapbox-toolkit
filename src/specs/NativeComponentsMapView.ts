@@ -1,12 +1,10 @@
 // @ts-nocheck
-import type { ViewProps } from 'react-native';
+import type { HostComponent, ViewProps } from 'react-native';
 import type {
+  Float,
   WithDefault,
-  Double,
 } from 'react-native/Libraries/Types/CodegenTypes';
 import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
-import type { HostComponent } from 'react-native';
-import type { Float } from 'react-native/Libraries/Types/CodegenTypes';
 
 export type StyleURL =
   | 'standard'
