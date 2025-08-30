@@ -1,14 +1,15 @@
-import { RnMapboxToolkitView } from 'rn-mapbox-toolkit';
+import MapView from 'rn-mapbox-toolkit';
 
 export default function App() {
   return (
-    <RnMapboxToolkitView
+    <MapView
       style={{ flex: 1 }}
-      // centerCoordinate={{
-      //   longitude: -122.4194,
-      //   latitude: 37.7749,
-      //   zoom: 12,
-      // }}
+      styleUrl="streets-v12"
+      showScaleBar={true}
+      scaleBarOptions={{
+        marginLeft: 200,
+        isMetricUnits: true,
+      }}
     />
   );
 }

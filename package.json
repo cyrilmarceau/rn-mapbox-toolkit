@@ -6,7 +6,7 @@
   "types": "./lib/typescript/src/index.d.ts",
   "exports": {
     ".": {
-      "source": "./src/index.tsx",
+      "source": "./src/index.ts",
       "types": "./lib/typescript/src/index.d.ts",
       "default": "./lib/module/index.js"
     },
@@ -151,7 +151,7 @@
   "codegenConfig": {
     "name": "RnMapboxToolkitViewSpec",
     "type": "all",
-    "jsSrcsDir": "src",
+    "jsSrcsDir": "./src/specs",
     "android": {
       "javaPackageName": "com.rnmapboxtoolkit"
     },
