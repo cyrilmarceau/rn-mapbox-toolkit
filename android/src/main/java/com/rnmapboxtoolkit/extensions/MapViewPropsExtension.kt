@@ -1,6 +1,9 @@
+import androidx.core.graphics.toColorInt
 import com.facebook.react.bridge.ReadableMap
 import com.mapbox.maps.plugin.scalebar.generated.ScaleBarSettings
 import com.mapbox.maps.Style
+import com.mapbox.maps.plugin.attribution.generated.AttributionSettings
+import com.mapbox.maps.plugin.logo.generated.LogoSettings
 
 /**
  * Extension function to convert ReadableMap to Mapbox ScaleBarSettings
@@ -52,21 +55,61 @@ fun ReadableMap?.toScaleBarSettingsBlock(): (ScaleBarSettings.Builder.() -> Unit
     }
 }
 
-/**
- * Extension function to convert ReadableMap to Mapbox ScaleBarSettings
- */
-fun String.toMapStyleUrl(): String {
-    return when (this) {
-        "standard" -> Style.MAPBOX_STREETS
-        "standard-satellite" -> Style.STANDARD_SATELLITE
-        "streets-v12" -> Style.MAPBOX_STREETS
-        "outdoors-v12" -> Style.OUTDOORS
-        "light-v11" -> Style.LIGHT
-        "dark-v11" -> Style.DARK
-        "satellite-v9" -> Style.SATELLITE
-        "satellite-streets-v12" -> Style.SATELLITE_STREETS
-        "traffic-day-v2" -> Style.TRAFFIC_DAY
-        "traffic-night-v2" -> Style.TRAFFIC_NIGHT
-        else -> Style.MAPBOX_STREETS
+fun ReadableMap?.toAttributionSettingsBlock(): (AttributionSettings.Builder.() -> Unit)? {
+    return this?.let { map ->
+        {
+            if (map.hasKey("clickable")) {
+                clickable = map.getBoolean("clickable")
+            }
+            if (map.hasKey("enabled")) {
+                enabled = map.getBoolean("enabled")
+            }
+            if (map.hasKey("iconColor")) {
+                iconColor = map.getString("iconColor")?.toColorInt() ?: "#FF1E8CAB".toColorInt()
+            }
+            if (map.hasKey("marginBottom")) {
+                marginBottom = map.getDouble("marginBottom").toFloat()
+            }
+
+            if (map.hasKey("marginLeft")) {
+                marginLeft = map.getDouble("marginLeft").toFloat()
+            }
+            if (map.hasKey("marginTop")) {
+                marginTop = map.getDouble("marginTop").toFloat()
+            }
+            if (map.hasKey("marginRight")) {
+                marginRight = map.getDouble("marginRight").toFloat()
+            }
+            if (map.hasKey("marginBottom")) {
+                marginBottom = map.getDouble("marginBottom").toFloat()
+            }
+        }
+    }
+}
+
+
+fun ReadableMap?.toLogoSettingsBlock(): (LogoSettings.Builder.() -> Unit)? {
+    return this?.let { map ->
+        {
+
+            if (map.hasKey("enabled")) {
+                enabled = map.getBoolean("enabled")
+            }
+            if (map.hasKey("marginBottom")) {
+                marginBottom = map.getDouble("marginBottom").toFloat()
+            }
+            if (map.hasKey("marginLeft")) {
+                marginLeft = map.getDouble("marginLeft").toFloat()
+            }
+            if (map.hasKey("marginTop")) {
+                marginTop = map.getDouble("marginTop").toFloat()
+            }
+            if (map.hasKey("marginRight")) {
+                marginRight = map.getDouble("marginRight").toFloat()
+            }
+            if (map.hasKey("marginBottom")) {
+                marginBottom = map.getDouble("marginBottom").toFloat()
+            }
+        }
     }
 }

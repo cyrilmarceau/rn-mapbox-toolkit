@@ -9,6 +9,8 @@ import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.viewmanagers.RnMapboxToolkitViewManagerInterface
 import com.facebook.react.viewmanagers.RnMapboxToolkitViewManagerDelegate
 import com.rnmapboxtoolkit.mapper.MapStyleURL
+import toAttributionSettingsBlock
+import toLogoSettingsBlock
 import toScaleBarSettingsBlock
 
 
@@ -61,6 +63,28 @@ class RnMapboxToolkitViewManager : SimpleViewManager<RnMapboxToolkitView>(),
         val scaleBarSettingsBlock = value.toScaleBarSettingsBlock()
         scaleBarSettingsBlock?.let { block ->
             view?.setScaleBarOptions(block)
+        }
+    }
+
+    @ReactProp(name = "logoOptions")
+    override fun setLogoOptions(
+        view: RnMapboxToolkitView?,
+        value: ReadableMap?
+    ) {
+        val logoSettingsBlock = value.toLogoSettingsBlock()
+        logoSettingsBlock?.let { block ->
+            view?.setLogoOptions(block)
+        }
+    }
+
+    @ReactProp(name = "attributionOptions")
+    override fun setAttributionOptions(
+        view: RnMapboxToolkitView?,
+        value: ReadableMap?
+    ) {
+        val attributionSettingsBlock = value.toAttributionSettingsBlock()
+        attributionSettingsBlock?.let { block ->
+            view?.setAttributionOptions(block)
         }
     }
 

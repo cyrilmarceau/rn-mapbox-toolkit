@@ -6,6 +6,10 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.ViewGroup
 import com.mapbox.maps.MapView
+import com.mapbox.maps.plugin.attribution.attribution
+import com.mapbox.maps.plugin.attribution.generated.AttributionSettings
+import com.mapbox.maps.plugin.logo.generated.LogoSettings
+import com.mapbox.maps.plugin.logo.logo
 import com.mapbox.maps.plugin.scalebar.generated.ScaleBarSettings
 import com.mapbox.maps.plugin.scalebar.scalebar
 
@@ -84,8 +88,6 @@ class RnMapboxToolkitView : ViewGroup {
         }
     }
 
-
-
     fun setShowScaleBar(value: Boolean) {
         mapView?.scalebar?.updateSettings {
             enabled = value
@@ -93,8 +95,15 @@ class RnMapboxToolkitView : ViewGroup {
     }
 
     fun setScaleBarOptions(block: ScaleBarSettings.Builder.() -> Unit) {
-        Log.d(TAG, "setScaleBarOptions >>> ${block}")
         mapView?.scalebar?.updateSettings(block)
+    }
+
+    fun setLogoOptions(block: (LogoSettings.Builder) -> Unit) {
+        mapView?.logo?.updateSettings(block)
+    }
+
+    fun setAttributionOptions(block: (AttributionSettings.Builder) -> Unit) {
+        mapView?.attribution?.updateSettings(block)
     }
 
 }

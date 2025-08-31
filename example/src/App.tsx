@@ -5,11 +5,16 @@ export default function App() {
   return (
     <MapView
       style={style.mapContainer}
-      styleUrl="streets-v12"
+      styleUrl="dark-v11"
       showScaleBar={true}
       scaleBarOptions={{
         marginLeft: 200,
         isMetricUnits: true,
+      }}
+      logoOptions={{
+        enabled: true,
+        marginLeft: 90,
+        position: 3,
       }}
     />
   );
