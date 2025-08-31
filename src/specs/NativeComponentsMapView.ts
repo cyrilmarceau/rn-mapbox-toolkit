@@ -23,7 +23,7 @@ interface NativeComponentsMapViewProps extends ViewProps {
   color?: string;
   styleUrl?: WithDefault<StyleURL, 'standard'>;
   showScaleBar: boolean;
-  scaleBarOptions: {
+  scaleBarOptions?: {
     marginLeft?: Float;
     marginTop?: Float;
     marginRight?: Float;
@@ -37,23 +37,23 @@ interface NativeComponentsMapViewProps extends ViewProps {
     ratio?: Float;
     isMetricUnits?: boolean;
   };
-  logoOptions: {
-    enabled: boolean;
-    marginBottom: Float;
-    marginLeft: Float;
-    marginRight: Float;
-    marginTop: Float;
-    position: Double;
+  logoOptions?: {
+    enabled?: boolean;
+    marginBottom?: Float;
+    marginLeft?: Float;
+    marginRight?: Float;
+    marginTop?: Float;
+    position?: Double;
   };
-  attributionOptions: {
-    clickable: boolean;
-    enabled: boolean;
-    iconColor: string;
-    marginBottom: Float;
-    marginLeft: Float;
-    marginRight: Float;
-    marginTop: Float;
-    position: Double;
+  attributionOptions?: {
+    clickable?: boolean;
+    enabled?: boolean;
+    iconColor?: string;
+    marginBottom?: Float;
+    marginLeft?: Float;
+    marginRight?: Float;
+    marginTop?: Float;
+    position?: Double;
   };
 }
 
