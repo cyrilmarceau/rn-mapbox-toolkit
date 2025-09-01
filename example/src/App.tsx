@@ -16,6 +16,13 @@ export default function App() {
         marginLeft: 90,
         position: 3,
       }}
+      compassOptions={{
+        enabled: true,
+        visibility: true,
+        fadeWhenFacingNorth: false,
+        position: 1,
+        marginRight: 80,
+      }}
     />
   );
 }

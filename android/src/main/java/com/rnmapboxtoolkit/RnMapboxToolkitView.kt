@@ -5,9 +5,12 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.util.Log
 import android.view.ViewGroup
+import com.mapbox.bindgen.Value
 import com.mapbox.maps.MapView
 import com.mapbox.maps.plugin.attribution.attribution
 import com.mapbox.maps.plugin.attribution.generated.AttributionSettings
+import com.mapbox.maps.plugin.compass.compass
+import com.mapbox.maps.plugin.compass.generated.CompassSettings
 import com.mapbox.maps.plugin.logo.generated.LogoSettings
 import com.mapbox.maps.plugin.logo.logo
 import com.mapbox.maps.plugin.scalebar.generated.ScaleBarSettings
@@ -104,6 +107,11 @@ class RnMapboxToolkitView : ViewGroup {
 
     fun setAttributionOptions(block: (AttributionSettings.Builder) -> Unit) {
         mapView?.attribution?.updateSettings(block)
+
+    }
+
+    fun setCompassOptions(block: (CompassSettings.Builder) -> Unit) {
+        mapView?.compass?.updateSettings(block)
     }
 
 }

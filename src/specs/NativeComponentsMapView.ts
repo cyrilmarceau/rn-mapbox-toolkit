@@ -55,6 +55,19 @@ interface NativeComponentsMapViewProps extends ViewProps {
     marginTop?: Float;
     position?: Double;
   };
+  compassOptions?: {
+    clickable?: boolean;
+    enabled?: boolean;
+    marginBottom?: Float;
+    marginLeft?: Float;
+    marginRight?: Float;
+    marginTop?: Float;
+    position?: Double;
+    fadeWhenFacingNorth: boolean;
+    opacity: Double;
+    rotation: Double;
+    visibility: boolean;
+  };
 }
 
 export interface MapViewProps extends ViewProps {
@@ -116,6 +129,60 @@ export interface MapViewProps extends ViewProps {
     marginRight?: number;
     marginTop?: number;
     position?: Double;
+  };
+  compassOptions?: {
+    /**
+     * Whether the compass can be clicked and click events can be registered. Default value: true.
+     */
+    clickable?: boolean;
+    /**
+     * Whether the compass is visible on the map. Default value: true.
+     */
+    enabled?: boolean;
+    /**
+     * Whether the compass fades out to invisible when facing north direction. Default value: true.
+     */
+    fadeWhenFacingNorth?: boolean;
+    /**
+     * Defines the margin to the bottom that the compass icon honors. Default value: 4.
+     * @default 4
+     */
+    marginBottom?: number;
+    /**
+     * Defines the margin to the left that the compass icon honors. Default value: 4.
+     * @default 4
+     */
+    marginLeft?: number;
+    /**
+     * Defines the margin to the right that the compass icon honors. Default value: 4.
+     * @default 4
+     */
+    marginRight?: number;
+    /**
+     * Defines the margin to the top that the compass icon honors. Default value: 4.
+     * @default 4
+     */
+    marginTop?: number;
+    /**
+     * The alpha channel value of the compass image Default value: 1.
+     * @default 1
+     */
+    opacity?: number;
+    /**
+     * Defines where the compass is positioned on the map Default value: "top-right".
+     * @default 1
+     */
+    position?: number;
+    /**
+     * The clockwise rotation value in degrees of the compass. Default value: 0.
+     * @default 0
+     */
+    rotation?: number;
+    /**
+     * Whether the compass is displayed. Default value: true.
+     * @default true
+     */
+    visibility?: boolean;
   };
 }
 

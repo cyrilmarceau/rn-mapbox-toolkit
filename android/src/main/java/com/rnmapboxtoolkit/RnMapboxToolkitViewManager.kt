@@ -10,6 +10,7 @@ import com.facebook.react.viewmanagers.RnMapboxToolkitViewManagerInterface
 import com.facebook.react.viewmanagers.RnMapboxToolkitViewManagerDelegate
 import com.rnmapboxtoolkit.mapper.MapStyleURL
 import toAttributionSettingsBlock
+import toCompassSettingsBlock
 import toLogoSettingsBlock
 import toScaleBarSettingsBlock
 
@@ -47,7 +48,7 @@ class RnMapboxToolkitViewManager : SimpleViewManager<RnMapboxToolkitView>(),
 
     }
 
-    @ReactProp(name = "styleUrl")
+    @ReactProp(name = "showScaleBar")
     override fun setShowScaleBar(
         view: RnMapboxToolkitView?,
         value: Boolean
@@ -85,6 +86,17 @@ class RnMapboxToolkitViewManager : SimpleViewManager<RnMapboxToolkitView>(),
         val attributionSettingsBlock = value.toAttributionSettingsBlock()
         attributionSettingsBlock?.let { block ->
             view?.setAttributionOptions(block)
+        }
+    }
+
+    @ReactProp(name = "compassOptions")
+    override fun setCompassOptions(
+        view: RnMapboxToolkitView?,
+        value: ReadableMap?
+    ) {
+        val compassSettingsBlock = value?.toCompassSettingsBlock()
+        compassSettingsBlock?.let { block ->
+            view?.setCompassOptions(block)
         }
     }
 
