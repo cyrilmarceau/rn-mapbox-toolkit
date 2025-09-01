@@ -63,10 +63,10 @@ interface NativeComponentsMapViewProps extends ViewProps {
     marginRight?: Float;
     marginTop?: Float;
     position?: Double;
-    fadeWhenFacingNorth: boolean;
-    opacity: Double;
-    rotation: Double;
-    visibility: boolean;
+    fadeWhenFacingNorth?: boolean;
+    opacity?: Double;
+    rotation?: Double;
+    visibility?: boolean;
   };
 }
 
