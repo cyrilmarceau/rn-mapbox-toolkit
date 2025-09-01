@@ -24,7 +24,6 @@ fun ReadableMap?.toScaleBarSettingsBlock(): (ScaleBarSettings.Builder.() -> Unit
                 marginBottom = map.getDouble("marginBottom").toFloat()
             }
 
-
             if (map.hasKey("textColor")) {
                 textColor = android.graphics.Color.parseColor(map.getString("textColor"))
             }
@@ -51,6 +50,10 @@ fun ReadableMap?.toScaleBarSettingsBlock(): (ScaleBarSettings.Builder.() -> Unit
             if (map.hasKey("isMetricUnits")) {
                 isMetricUnits = map.getBoolean("isMetricUnits")
             }
+
+            if (map.hasKey("position")) {
+                position = map.getInt("position").toGravity()
+            }
         }
     }
 }
@@ -70,7 +73,6 @@ fun ReadableMap?.toAttributionSettingsBlock(): (AttributionSettings.Builder.() -
             if (map.hasKey("marginBottom")) {
                 marginBottom = map.getDouble("marginBottom").toFloat()
             }
-
             if (map.hasKey("marginLeft")) {
                 marginLeft = map.getDouble("marginLeft").toFloat()
             }
@@ -82,6 +84,9 @@ fun ReadableMap?.toAttributionSettingsBlock(): (AttributionSettings.Builder.() -
             }
             if (map.hasKey("marginBottom")) {
                 marginBottom = map.getDouble("marginBottom").toFloat()
+            }
+            if (map.hasKey("position")) {
+                position = map.getInt("position").toGravity()
             }
         }
     }
@@ -106,6 +111,9 @@ fun ReadableMap?.toLogoSettingsBlock(): (LogoSettings.Builder.() -> Unit)? {
             }
             if (map.hasKey("marginBottom")) {
                 marginBottom = map.getDouble("marginBottom").toFloat()
+            }
+            if (map.hasKey("position")) {
+                position = map.getInt("position").toGravity()
             }
         }
     }

@@ -8,13 +8,16 @@ export default function App() {
       styleUrl="dark-v11"
       showScaleBar={true}
       scaleBarOptions={{
-        marginLeft: 200,
         isMetricUnits: true,
+        position: 3,
+        marginRight: 30,
       }}
       logoOptions={{
         enabled: true,
-        marginLeft: 90,
-        position: 3,
+        position: 2,
+      }}
+      attributionOptions={{
+        position: 2,
       }}
       compassOptions={{
         enabled: true,
