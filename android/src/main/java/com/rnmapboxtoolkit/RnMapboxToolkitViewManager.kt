@@ -9,6 +9,7 @@ import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.viewmanagers.RnMapboxToolkitViewManagerInterface
 import com.facebook.react.viewmanagers.RnMapboxToolkitViewManagerDelegate
 import com.rnmapboxtoolkit.mapper.MapStyleURL
+import com.rnmaps.fabric.event.OnMapIdleEvent
 import toAttributionSettingsBlock
 import toCompassSettingsBlock
 import toLogoSettingsBlock
@@ -32,6 +33,14 @@ class RnMapboxToolkitViewManager : SimpleViewManager<RnMapboxToolkitView>(),
     public override fun createViewInstance(context: ThemedReactContext): RnMapboxToolkitView {
         return RnMapboxToolkitView(context)
     }
+
+    override fun getExportedCustomDirectEventTypeConstants(): Map<String?, Any?>? {
+        return mapOf(
+            OnMapIdleEvent.EVENT_NAME to mapOf("registrationName" to OnMapIdleEvent.EVENT_NAME)
+        )
+    }
+
+
 
     @ReactProp(name = "color")
     override fun setColor(view: RnMapboxToolkitView?, color: String?) {

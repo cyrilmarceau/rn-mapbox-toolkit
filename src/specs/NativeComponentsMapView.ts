@@ -1,5 +1,10 @@
 // @ts-nocheck
-import type { HostComponent, ViewProps } from 'react-native';
+import type {
+  HostComponent,
+  ViewProps,
+  NativeSyntheticEvent,
+} from 'react-native';
+import type { DirectEventHandler } from 'react-native/Libraries/Types/CodegenTypes';
 import type { Double } from 'react-native/Libraries/Types/CodegenTypes';
 import type {
   Float,
@@ -35,6 +40,32 @@ const PositionToGravity = {
 
 export type PositionToGravity =
   (typeof PositionToGravity)[keyof typeof PositionToGravity];
+
+export type OnMapIdleEventHandler = DirectEventHandler<
+  Readonly<{
+    properties: {
+      pitch: Double;
+      bearing: Double;
+      zoom: Double;
+      coordinate: {
+        latitude: Double;
+        longitude: Double;
+      };
+    };
+  }>
+>;
+
+export type OnMapIdleEvent = NativeSyntheticEvent<{
+  properties: {
+    pitch: number;
+    bearing: number;
+    zoom: number;
+    coordinate: {
+      latitude: number;
+      longitude: number;
+    };
+  };
+}>;
 
 interface NativeComponentsMapViewProps extends ViewProps {
   color?: string;
@@ -86,6 +117,7 @@ interface NativeComponentsMapViewProps extends ViewProps {
     rotation?: Double;
     visibility?: boolean;
   };
+  onMapIdle?: OnMapIdleEventHandler;
 }
 
 export interface MapViewProps extends ViewProps {
@@ -312,6 +344,7 @@ export interface MapViewProps extends ViewProps {
      */
     visibility?: boolean;
   };
+  onMapIdle?: (e: OnMapIdleEvent) => void;
 }
 
 export default codegenNativeComponent<NativeComponentsMapViewProps>(

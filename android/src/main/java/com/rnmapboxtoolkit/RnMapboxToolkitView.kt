@@ -5,7 +5,9 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.util.Log
 import android.view.ViewGroup
-import com.mapbox.bindgen.Value
+import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.ReactContext
+import com.facebook.react.uimanager.UIManagerHelper
 import com.mapbox.maps.MapView
 import com.mapbox.maps.plugin.attribution.attribution
 import com.mapbox.maps.plugin.attribution.generated.AttributionSettings
@@ -15,6 +17,8 @@ import com.mapbox.maps.plugin.logo.generated.LogoSettings
 import com.mapbox.maps.plugin.logo.logo
 import com.mapbox.maps.plugin.scalebar.generated.ScaleBarSettings
 import com.mapbox.maps.plugin.scalebar.scalebar
+import com.rnmapboxtoolkit.extensions.toReadableMap
+import com.rnmaps.fabric.event.OnMapIdleEvent
 
 
 class RnMapboxToolkitView : ViewGroup {
@@ -49,6 +53,7 @@ class RnMapboxToolkitView : ViewGroup {
 
 
 
+
     private fun initializeMap() {
         try {
             mapView = MapView(context).apply {
@@ -73,12 +78,28 @@ class RnMapboxToolkitView : ViewGroup {
             Log.d(TAG, "subscribeStyleDataLoaded >>> ${st.type}")
         }
 
-        mapView?.mapboxMap?.addOnMapIdleListener { it
-            Log.d(TAG, "addOnMapIdleListener >>> ${it}")
-        }
 
         mapView?.mapboxMap?.subscribeMapIdle { it ->
             Log.d(TAG, "subscribeMapIdle >>> ${it}")
+            val position = mapView?.mapboxMap?.cameraState
+            Log.d(TAG, "subscribeMapIdle >>> ${position}")
+
+            val payload = Arguments.createMap().apply {
+                putMap("coordinates", position?.center?.toReadableMap())
+                putDouble("zoom", position?.zoom ?: 0.0)
+                putDouble("bearing", position?.bearing ?: 0.0)
+                putDouble("pitch", position?.pitch ?: 0.0)
+            }
+            val properties = Arguments.createMap().apply {
+                putMap("properties", payload)
+            }
+            val reactContext = context as ReactContext
+            val surfaceId = UIManagerHelper.getSurfaceId(reactContext)
+            val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(reactContext, id)
+
+            val event = OnMapIdleEvent(surfaceId, id, properties)
+
+            eventDispatcher?.dispatchEvent(event)
         }
 
 

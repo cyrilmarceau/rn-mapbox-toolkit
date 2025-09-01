@@ -26,6 +26,9 @@ export default function App() {
         position: 1,
         marginRight: 80,
       }}
+      onMapIdle={(e) =>
+        console.log(`onMapIdle message`, e.nativeEvent.properties)
+      }
     />
   );
 }

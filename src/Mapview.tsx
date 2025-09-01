@@ -1,4 +1,5 @@
 // import { RnMapboxToolkitView } from 'rn-mapbox-toolkit';
+import React from 'react';
 import NativeComponentsMapView, {
   type MapViewProps,
 } from './specs/NativeComponentsMapView';
