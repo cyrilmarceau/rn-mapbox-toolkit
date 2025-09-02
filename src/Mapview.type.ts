@@ -12,7 +12,11 @@ export type OnMapIdleEvent = NativeSyntheticEvent<{
   };
 }>;
 
-type OnStyleDataEventSourceType = 'Style' | 'Sprite' | 'Sources';
+export enum OnStyleDataEventSourceType {
+  Style = 0,
+  Sprite = 1,
+  Sources = 2,
+}
 export type OnStyleDataEvent = NativeSyntheticEvent<{
   properties: {
     type: OnStyleDataEventSourceType;
