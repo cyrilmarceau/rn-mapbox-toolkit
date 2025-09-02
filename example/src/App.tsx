@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import MapView from 'rn-mapbox-toolkit';
+import { MapView } from 'rn-mapbox-toolkit';
 
 export default function App() {
   return (
