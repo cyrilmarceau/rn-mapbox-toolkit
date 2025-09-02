@@ -10,6 +10,14 @@ import com.facebook.react.viewmanagers.RnMapboxToolkitViewManagerInterface
 import com.facebook.react.viewmanagers.RnMapboxToolkitViewManagerDelegate
 import com.rnmapboxtoolkit.mapper.MapStyleURL
 import com.rnmaps.fabric.event.OnMapIdleEvent
+import com.rnmaps.fabric.event.OnMapLoadedEvent
+import com.rnmaps.fabric.event.OnMapLoadingErrorEvent
+import com.rnmaps.fabric.event.OnRenderFrameFinished
+import com.rnmaps.fabric.event.OnRenderFrameStarted
+import com.rnmaps.fabric.event.OnSourceAddedEvent
+import com.rnmaps.fabric.event.OnStyleDataLoadedEvent
+import com.rnmaps.fabric.event.OnStyleImageMissingEvent
+import com.rnmaps.fabric.event.OnStyleLoadedEvent
 import toAttributionSettingsBlock
 import toCompassSettingsBlock
 import toLogoSettingsBlock
@@ -36,7 +44,15 @@ class RnMapboxToolkitViewManager : SimpleViewManager<RnMapboxToolkitView>(),
 
     override fun getExportedCustomDirectEventTypeConstants(): Map<String?, Any?>? {
         return mapOf(
-            OnMapIdleEvent.EVENT_NAME to mapOf("registrationName" to OnMapIdleEvent.EVENT_NAME)
+            OnMapIdleEvent.EVENT_NAME to mapOf("registrationName" to OnMapIdleEvent.EVENT_NAME),
+            OnMapLoadedEvent.EVENT_NAME to mapOf("registrationName" to OnMapLoadedEvent.EVENT_NAME),
+            OnMapLoadingErrorEvent.EVENT_NAME to mapOf("registrationName" to OnMapLoadingErrorEvent.EVENT_NAME),
+            OnRenderFrameFinished.EVENT_NAME to mapOf("registrationName" to OnRenderFrameFinished.EVENT_NAME),
+            OnRenderFrameStarted.EVENT_NAME to mapOf("registrationName" to OnRenderFrameStarted.EVENT_NAME),
+            OnSourceAddedEvent.EVENT_NAME to mapOf("registrationName" to OnSourceAddedEvent.EVENT_NAME),
+            OnStyleDataLoadedEvent.EVENT_NAME to mapOf("registrationName" to OnStyleDataLoadedEvent.EVENT_NAME),
+            OnStyleImageMissingEvent.EVENT_NAME to mapOf("registrationName" to OnStyleImageMissingEvent.EVENT_NAME),
+            OnStyleLoadedEvent.EVENT_NAME to mapOf("registrationName" to OnStyleLoadedEvent.EVENT_NAME)
         )
     }
 

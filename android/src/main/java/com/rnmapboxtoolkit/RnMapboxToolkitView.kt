@@ -19,6 +19,8 @@ import com.mapbox.maps.plugin.scalebar.generated.ScaleBarSettings
 import com.mapbox.maps.plugin.scalebar.scalebar
 import com.rnmapboxtoolkit.extensions.toReadableMap
 import com.rnmaps.fabric.event.OnMapIdleEvent
+import com.rnmaps.fabric.event.OnMapLoadedEvent
+import com.rnmaps.fabric.event.OnStyleDataLoadedEvent
 
 
 class RnMapboxToolkitView : ViewGroup {
@@ -70,19 +72,51 @@ class RnMapboxToolkitView : ViewGroup {
     }
 
     private fun setupMapListeners() {
-        mapView?.mapboxMap?.subscribeStyleLoaded { st ->
-            Log.d(TAG, "subscribeStyleLoaded >>> ${st}")
-        }
+        val reactContext = context as ReactContext
+        val surfaceId = UIManagerHelper.getSurfaceId(reactContext)
+        val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(reactContext, id)
 
+
+        mapView?.mapboxMap?.subscribeMapLoaded { st ->
+            Log.d(TAG, "subscribeMapLoaded >>> ${st.timeInterval}")
+            val payload = Arguments.createMap()
+            val event = OnMapLoadedEvent(surfaceId, id, payload)
+            eventDispatcher?.dispatchEvent(event)
+        }
         mapView?.mapboxMap?.subscribeStyleDataLoaded { st ->
             Log.d(TAG, "subscribeStyleDataLoaded >>> ${st.type}")
+            val payload = Arguments.createMap().apply {
+                putString("type", st.type.name)
+            }
+            val properties = Arguments.createMap().apply {
+                putMap("properties", payload)
+            }
+            val event = OnStyleDataLoadedEvent(surfaceId, id, properties)
+            Log.d(TAG, "Dispatching event: ${st.type}")
+            eventDispatcher?.dispatchEvent(event)
+            Log.d(TAG, "Event dispatched: ${st.type}")
         }
-
-
+        // https://docs.mapbox.com/android/maps/api/11.14.3/mapbox-maps-android/com.mapbox.maps/-map-loading-error
+       /* mapView?.mapboxMap?.subscribeMapLoadingError { st ->
+            Log.d(TAG, "subscribeMapLoadingError >>> ${st.type}")
+        }
+        mapView?.mapboxMap?.subscribeRenderFrameFinished { it ->
+            Log.d(TAG, "subscribeRenderFrameFinished >>> ${it}")
+        }
+        mapView?.mapboxMap?.subscribeRenderFrameStarted { it ->
+            Log.d(TAG, "subscribeRenderFrameStarted >>> ${it}")
+        }
+        mapView?.mapboxMap?.subscribeStyleLoaded { it ->
+            Log.d(TAG, "subscribeStyleLoaded >>> ${it}")
+        }
+        mapView?.mapboxMap?.subscribeStyleImageMissing { it ->
+            Log.d(TAG, "subscribeStyleImageMissing >>> ${it}")
+        }
+        mapView?.mapboxMap?.subscribeSourceAdded { it ->
+            Log.d(TAG, "subscribeSourceAdded >>> ${it}")
+        }*/
         mapView?.mapboxMap?.subscribeMapIdle { it ->
-            Log.d(TAG, "subscribeMapIdle >>> ${it}")
             val position = mapView?.mapboxMap?.cameraState
-            Log.d(TAG, "subscribeMapIdle >>> ${position}")
 
             val payload = Arguments.createMap().apply {
                 putMap("coordinates", position?.center?.toReadableMap())
@@ -93,16 +127,12 @@ class RnMapboxToolkitView : ViewGroup {
             val properties = Arguments.createMap().apply {
                 putMap("properties", payload)
             }
-            val reactContext = context as ReactContext
-            val surfaceId = UIManagerHelper.getSurfaceId(reactContext)
-            val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(reactContext, id)
+
 
             val event = OnMapIdleEvent(surfaceId, id, properties)
 
             eventDispatcher?.dispatchEvent(event)
         }
-
-
     }
 
 

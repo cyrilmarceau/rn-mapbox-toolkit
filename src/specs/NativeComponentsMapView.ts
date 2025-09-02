@@ -38,6 +38,16 @@ const PositionToGravity = {
   BottomLeft: 3,
 } as const;
 
+export type LatLng = {
+  latitude: number;
+  longitude: number;
+};
+
+export type Point = {
+  x: number;
+  y: number;
+};
+
 export type PositionToGravity =
   (typeof PositionToGravity)[keyof typeof PositionToGravity];
 
@@ -55,15 +65,23 @@ export type OnMapIdleEventHandler = DirectEventHandler<
   }>
 >;
 
+export type OnStyleDataLoadedEventHandler = DirectEventHandler<
+  Readonly<{ properties: { type: string } }>
+>;
+
 export type OnMapIdleEvent = NativeSyntheticEvent<{
   properties: {
     pitch: number;
     bearing: number;
     zoom: number;
-    coordinate: {
-      latitude: number;
-      longitude: number;
-    };
+    coordinate: LatLng;
+  };
+}>;
+
+type OnStyleDataEventSourceType = 'Style' | 'Sprite' | 'Sources';
+export type OnStyleDataEvent = NativeSyntheticEvent<{
+  properties: {
+    type: OnStyleDataEventSourceType;
   };
 }>;
 
@@ -118,6 +136,8 @@ interface NativeComponentsMapViewProps extends ViewProps {
     visibility?: boolean;
   };
   onMapIdle?: OnMapIdleEventHandler;
+  onMapLoaded?: DirectEventHandler<null>;
+  onStyleDataLoaded?: OnStyleDataLoadedEventHandler;
 }
 
 export interface MapViewProps extends ViewProps {
@@ -344,7 +364,26 @@ export interface MapViewProps extends ViewProps {
      */
     visibility?: boolean;
   };
+
+  /**
+   * The `map` has entered the idle state.
+   * The `map` is idle when there are no ongoing animations, transitions and the `map` has rendered all requested non-volatile tiles (e.g., live traffic tiles).
+   * The event will not be emitted if `setUserAnimationInProgress` and / or `setGestureInProgress` is set to `true`.
+   * The `onMapIdle` will also be emitted after expired resources are re-fetched and `map` re-renders the new data.
+   * @param e
+   * @returns
+   */
   onMapIdle?: (e: OnMapIdleEvent) => void;
+
+  /**
+   * The style has been fully loaded, and the `map` has rendered all visible tiles.
+   * The event will be emitted only once for the current style.
+   * If it is required to continuously observe an event where all the necessary resources are loaded or rendered, please check the following events: `onMapIdle`, `onStyleDataLoaded`, and `onRenderFrameFinished`.
+   * @returns
+   */
+  onMapLoaded?: () => void;
+
+  onStyleDataLoaded?: (e: OnStyleDataEvent) => void;
 }
 
 export default codegenNativeComponent<NativeComponentsMapViewProps>(

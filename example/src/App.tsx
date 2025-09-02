@@ -27,7 +27,17 @@ export default function App() {
         marginRight: 80,
       }}
       onMapIdle={(e) =>
-        console.log(`onMapIdle message`, e.nativeEvent.properties)
+        console.log(
+          'onMapIdle',
+          JSON.stringify(e.nativeEvent.properties, null, 2)
+        )
+      }
+      onMapLoaded={() => console.log('onMapLoaded trigger')}
+      onStyleDataLoaded={async (e) =>
+        console.log(
+          'onStyleDataLoaded',
+          JSON.stringify(e.nativeEvent.properties, null, 2)
+        )
       }
     />
   );
