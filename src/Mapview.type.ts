@@ -12,18 +12,14 @@ export type OnMapIdleEvent = NativeSyntheticEvent<{
   };
 }>;
 
-export enum OnStyleDataEventSourceType {
-  Style = 0,
-  Sprite = 1,
-  Sources = 2,
-}
+// export type OnStyleDataEventSourceType = 'Style' | 'Sprite' | 'Sources';
 export type OnStyleDataEvent = NativeSyntheticEvent<{
   properties: {
-    type: OnStyleDataEventSourceType;
+    type: 'Style' | 'Sprite' | 'Sources';
   };
 }>;
 
-export interface MapViewProps extends ViewProps {
+export type MapViewProps = ViewProps & {
   color?: string;
   styleUrl?: StyleURL;
 
@@ -267,4 +263,4 @@ export interface MapViewProps extends ViewProps {
   onMapLoaded?: () => void;
 
   onStyleDataLoaded?: (e: OnStyleDataEvent) => void;
-}
+};

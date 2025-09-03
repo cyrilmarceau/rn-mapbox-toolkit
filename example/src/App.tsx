@@ -33,12 +33,7 @@ export default function App() {
         )
       }
       onMapLoaded={() => console.log('onMapLoaded trigger')}
-      onStyleDataLoaded={async (e) =>
-        console.log(
-          'onStyleDataLoaded',
-          JSON.stringify(e.nativeEvent.properties, null, 2)
-        )
-      }
+      onStyleDataLoaded={(e) => console.log(e.nativeEvent.properties.type)}
     />
   );
 }

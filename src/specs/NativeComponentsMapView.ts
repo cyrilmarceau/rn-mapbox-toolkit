@@ -4,7 +4,6 @@ import type {
   Double,
   Float,
   WithDefault,
-  Int32,
 } from 'react-native/Libraries/Types/CodegenTypesNamespace';
 import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
 
@@ -23,7 +22,7 @@ export type OnMapIdleEventHandler = DirectEventHandler<
 >;
 
 export type OnStyleDataLoadedEventHandler = DirectEventHandler<
-  Readonly<{ properties: { type: Int32 } }>
+  Readonly<{ properties: { type: 'Style' | 'Sprite' | 'Sources' } }>
 >;
 
 export type StyleURL =
