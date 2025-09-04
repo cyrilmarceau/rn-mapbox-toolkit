@@ -34,6 +34,18 @@ export default function App() {
       }
       onMapLoaded={() => console.log('onMapLoaded trigger')}
       onStyleDataLoaded={(e) => console.log(e.nativeEvent.properties.type)}
+      onStyleLoaded={() => console.log('onStyleLoaded trigger')}
+      onMapLoadingError={(e) =>
+        console.log('onMapLoadingError', e.nativeEvent.properties.type)
+      }
+      onSourceAdded={(e) =>
+        console.log('onSourceAdded', e.nativeEvent.properties.sourceId)
+      }
+      onStyleImageMissing={(e) =>
+        console.log('onStyleImageMissing', e.nativeEvent.properties.imageId)
+      }
+      // onRenderFrameStarted={() => console.log('onRenderFrameStarted')}
+      // onRenderFrameFinished={() => console.log('onRenderFrameFinished')}
     />
   );
 }

@@ -21,8 +21,27 @@ export type OnMapIdleEventHandler = DirectEventHandler<
   }>
 >;
 
+export type OnMapLoadingErrorHandler = DirectEventHandler<
+  Readonly<{
+    properties: {
+      type: 'Style' | 'Sprite' | 'Sources' | 'Glyphs' | 'Tile';
+      message: string;
+      sourceId?: string;
+      tileId?: string;
+    };
+  }>
+>;
+
 export type OnStyleDataLoadedEventHandler = DirectEventHandler<
   Readonly<{ properties: { type: 'Style' | 'Sprite' | 'Sources' } }>
+>;
+
+export type OnSourceAddedEventHandler = DirectEventHandler<
+  Readonly<{ properties: { sourceId: string } }>
+>;
+
+export type OnStyleImageMissingEventHandler = DirectEventHandler<
+  Readonly<{ properties: { imageId: string } }>
 >;
 
 export type StyleURL =
@@ -90,6 +109,13 @@ interface NativeComponentsMapViewProps extends ViewProps {
   onMapIdle?: OnMapIdleEventHandler;
   onMapLoaded?: DirectEventHandler<null>;
   onStyleDataLoaded?: OnStyleDataLoadedEventHandler;
+  onStyleLoaded?: DirectEventHandler<null>;
+  onMapLoadingError?: OnMapLoadingErrorHandler;
+
+  onSourceAdded?: OnSourceAddedEventHandler;
+  onStyleImageMissing?: OnStyleImageMissingEventHandler;
+  onRenderFrameStarted?: DirectEventHandler<null>;
+  onRenderFrameFinished?: DirectEventHandler<null>;
 }
 
 export default codegenNativeComponent<NativeComponentsMapViewProps>(

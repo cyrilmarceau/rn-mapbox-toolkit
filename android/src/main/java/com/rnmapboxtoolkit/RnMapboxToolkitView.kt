@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.uimanager.UIManagerHelper
+import com.mapbox.common.Cancelable
 import com.mapbox.maps.MapView
 import com.mapbox.maps.plugin.attribution.attribution
 import com.mapbox.maps.plugin.attribution.generated.AttributionSettings
@@ -20,7 +21,13 @@ import com.mapbox.maps.plugin.scalebar.scalebar
 import com.rnmapboxtoolkit.extensions.toReadableMap
 import com.rnmaps.fabric.event.OnMapIdleEvent
 import com.rnmaps.fabric.event.OnMapLoadedEvent
+import com.rnmaps.fabric.event.OnMapLoadingErrorEvent
+import com.rnmaps.fabric.event.OnRenderFrameFinished
+import com.rnmaps.fabric.event.OnRenderFrameStarted
+import com.rnmaps.fabric.event.OnSourceAddedEvent
 import com.rnmaps.fabric.event.OnStyleDataLoadedEvent
+import com.rnmaps.fabric.event.OnStyleImageMissingEvent
+import com.rnmaps.fabric.event.OnStyleLoadedEvent
 
 
 class RnMapboxToolkitView : ViewGroup {
@@ -30,6 +37,7 @@ class RnMapboxToolkitView : ViewGroup {
     }
 
     private var mapView: MapView? = null
+    private val subscriptions = mutableListOf<Cancelable>()
 
     init {
         Log.d(TAG, "Init")
@@ -53,6 +61,10 @@ class RnMapboxToolkitView : ViewGroup {
         mapView?.measure(widthMeasureSpec, heightMeasureSpec)
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        cleanupMapListeners()
+    }
 
 
 
@@ -82,39 +94,25 @@ class RnMapboxToolkitView : ViewGroup {
             val payload = Arguments.createMap()
             val event = OnMapLoadedEvent(surfaceId, id, payload)
             eventDispatcher?.dispatchEvent(event)
+        }?.let { cancelable ->
+            subscriptions.add(cancelable)
         }
-        mapView?.mapboxMap?.subscribeStyleDataLoaded { st ->
-            Log.d(TAG, "subscribeStyleDataLoaded >>> ${st.type}")
+        mapView?.mapboxMap?.subscribeMapLoadingError { error ->
+            Log.d(TAG, "subscribeMapLoadingError >>> ${error}")
             val payload = Arguments.createMap().apply {
-                putString("type", st.type.name)
+                putString("type", error.type.name)
+                putString("message", error.message)
+                putString("sourceId", error.sourceId)
+                putString("tileId", error.tileId.toString())
             }
             val properties = Arguments.createMap().apply {
                 putMap("properties", payload)
             }
-            val event = OnStyleDataLoadedEvent(surfaceId, id, properties)
-            Log.d(TAG, "Dispatching event: ${st.type}")
+            val event = OnMapLoadingErrorEvent(surfaceId, id, properties)
             eventDispatcher?.dispatchEvent(event)
-            Log.d(TAG, "Event dispatched: ${st.type}")
+        }?.let { cancelable ->
+            subscriptions.add(cancelable)
         }
-        // https://docs.mapbox.com/android/maps/api/11.14.3/mapbox-maps-android/com.mapbox.maps/-map-loading-error
-       /* mapView?.mapboxMap?.subscribeMapLoadingError { st ->
-            Log.d(TAG, "subscribeMapLoadingError >>> ${st.type}")
-        }
-        mapView?.mapboxMap?.subscribeRenderFrameFinished { it ->
-            Log.d(TAG, "subscribeRenderFrameFinished >>> ${it}")
-        }
-        mapView?.mapboxMap?.subscribeRenderFrameStarted { it ->
-            Log.d(TAG, "subscribeRenderFrameStarted >>> ${it}")
-        }
-        mapView?.mapboxMap?.subscribeStyleLoaded { it ->
-            Log.d(TAG, "subscribeStyleLoaded >>> ${it}")
-        }
-        mapView?.mapboxMap?.subscribeStyleImageMissing { it ->
-            Log.d(TAG, "subscribeStyleImageMissing >>> ${it}")
-        }
-        mapView?.mapboxMap?.subscribeSourceAdded { it ->
-            Log.d(TAG, "subscribeSourceAdded >>> ${it}")
-        }*/
         mapView?.mapboxMap?.subscribeMapIdle { it ->
             val position = mapView?.mapboxMap?.cameraState
 
@@ -127,14 +125,87 @@ class RnMapboxToolkitView : ViewGroup {
             val properties = Arguments.createMap().apply {
                 putMap("properties", payload)
             }
-
-
             val event = OnMapIdleEvent(surfaceId, id, properties)
-
             eventDispatcher?.dispatchEvent(event)
+        }?.let { cancelable ->
+            subscriptions.add(cancelable)
         }
+
+        mapView?.mapboxMap?.subscribeStyleDataLoaded { st ->
+            Log.d(TAG, "subscribeStyleDataLoaded >>> ${st.type}")
+            val payload = Arguments.createMap().apply {
+                putString("type", st.type.name)
+            }
+            val properties = Arguments.createMap().apply {
+                putMap("properties", payload)
+            }
+            val event = OnStyleDataLoadedEvent(surfaceId, id, properties)
+            eventDispatcher?.dispatchEvent(event)
+        }?.let { cancelable ->
+            subscriptions.add(cancelable)
+        }
+        mapView?.mapboxMap?.subscribeStyleLoaded { it ->
+            Log.d(TAG, "subscribeStyleLoaded >>> ${it}")
+            val payload = Arguments.createMap()
+            val event = OnStyleLoadedEvent(surfaceId, id, payload)
+            eventDispatcher?.dispatchEvent(event)
+
+        }?.let { cancelable ->
+            subscriptions.add(cancelable)
+        }
+        mapView?.mapboxMap?.subscribeStyleImageMissing { it ->
+            Log.d(TAG, "subscribeStyleImageMissing >>> ${it}")
+            val payload = Arguments.createMap().apply {
+                putString("imageId", it.imageId)
+            }
+            val properties = Arguments.createMap().apply {
+                putMap("properties", payload)
+            }
+            val event = OnStyleImageMissingEvent(surfaceId, id, properties)
+            eventDispatcher?.dispatchEvent(event)
+        }?.let { cancelable ->
+            subscriptions.add(cancelable)
+        }
+
+        mapView?.mapboxMap?.subscribeSourceAdded { it ->
+            Log.d(TAG, "subscribeSourceAdded >>> ${it}")
+            val payload = Arguments.createMap().apply {
+                putString("sourceId", it.sourceId)
+            }
+            val properties = Arguments.createMap().apply {
+                putMap("properties", payload)
+            }
+            val event = OnSourceAddedEvent(surfaceId, id, properties)
+            eventDispatcher?.dispatchEvent(event)
+        }?.let { cancelable ->
+            subscriptions.add(cancelable)
+        }
+
+        mapView?.mapboxMap?.subscribeRenderFrameFinished { it ->
+            Log.d(TAG, "subscribeRenderFrameFinished >>> ${it}")
+            val payload = Arguments.createMap()
+            val event = OnRenderFrameFinished(surfaceId, id, payload)
+            eventDispatcher?.dispatchEvent(event)
+
+        }?.let { cancelable ->
+            subscriptions.add(cancelable)
+        }
+        mapView?.mapboxMap?.subscribeRenderFrameStarted { it ->
+            val payload = Arguments.createMap()
+            val event = OnRenderFrameStarted(surfaceId, id, payload)
+            eventDispatcher?.dispatchEvent(event)
+            Log.d(TAG, "subscribeRenderFrameStarted >>> ${it}")
+        }?.let { cancelable ->
+            subscriptions.add(cancelable)
+        }
+
+
     }
 
+    private fun cleanupMapListeners() {
+        subscriptions.forEach { it.cancel() }
+        subscriptions.clear()
+    }
 
     fun setStyleURL(style: String) {
         mapView?.mapboxMap?.loadStyle(style) {st ->

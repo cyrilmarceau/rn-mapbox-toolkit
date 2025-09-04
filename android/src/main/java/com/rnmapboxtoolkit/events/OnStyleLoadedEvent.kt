@@ -10,7 +10,7 @@ class OnStyleLoadedEvent(
 ) : Event<OnStyleLoadedEvent>(surfaceId, viewId) {
 
     companion object {
-        const val EVENT_NAME = "onStyleLoadedEvent"
+        const val EVENT_NAME = "onStyleLoaded"
     }
 
     override fun getEventName(): String {

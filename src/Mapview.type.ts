@@ -13,6 +13,40 @@ export type OnMapIdleEvent = NativeSyntheticEvent<{
 }>;
 
 // export type OnStyleDataEventSourceType = 'Style' | 'Sprite' | 'Sources';
+export type OnSourceAddedEvent = NativeSyntheticEvent<{
+  properties: {
+    sourceId: string;
+  };
+}>;
+
+export type OnStyleImageMissingEvent = NativeSyntheticEvent<{
+  properties: {
+    imageId: string;
+  };
+}>;
+
+export type OnMapLoadingErrorEvent = NativeSyntheticEvent<{
+  properties: {
+    /**
+     * The enumeration defines map loading errors.
+     */
+    type: 'Style' | 'Sprite' | 'Sources' | 'Glyphs' | 'Tile';
+
+    /**
+     * Descriptive error message.
+     */
+    message: string;
+    /**
+     * dentifier of a source. Non-null when the type is `Source` or `Tile`
+     */
+    sourceId?: string;
+    /**
+     * The canonical tile id of a tile. Non-null when the type is `Tile`.
+     */
+    tileId?: string;
+  };
+}>;
+
 export type OnStyleDataEvent = NativeSyntheticEvent<{
   properties: {
     type: 'Style' | 'Sprite' | 'Sources';
@@ -262,5 +296,25 @@ export type MapViewProps = ViewProps & {
    */
   onMapLoaded?: () => void;
 
+  /**
+   * The style data has been loaded.
+   * The event will be emitted once for each `StyleDataLoadedType` type during style loading.
+   * If a new style is set, events will be emitted again for the newly set style.
+   * Note: The event may be emitted synchronously, for example, when `setStyleJSON` is used to load style.
+   */
   onStyleDataLoaded?: (e: OnStyleDataEvent) => void;
+
+  /**
+   * The requested style has been fully loaded, including specified sprite, and sources' metadata.
+   */
+  onStyleLoaded?: () => void;
+
+  onMapLoadingError?: (e: OnMapLoadingErrorEvent) => void;
+
+  onSourceAdded?: (e: OnSourceAddedEvent) => void;
+
+  onStyleImageMissing?: (e: OnStyleImageMissingEvent) => void;
+
+  onRenderFrameStarted?: () => void;
+  onRenderFrameFinished?: () => void;
 };

@@ -45,6 +45,7 @@ class RnMapboxToolkitViewManager : SimpleViewManager<RnMapboxToolkitView>(),
     override fun getExportedCustomDirectEventTypeConstants(): Map<String?, Any?>? {
         return mapOf(
             OnMapIdleEvent.EVENT_NAME to mapOf("registrationName" to OnMapIdleEvent.EVENT_NAME),
+            OnStyleLoadedEvent.EVENT_NAME to mapOf("registrationName" to OnStyleLoadedEvent.EVENT_NAME),
             OnMapLoadedEvent.EVENT_NAME to mapOf("registrationName" to OnMapLoadedEvent.EVENT_NAME),
             OnMapLoadingErrorEvent.EVENT_NAME to mapOf("registrationName" to OnMapLoadingErrorEvent.EVENT_NAME),
             OnRenderFrameFinished.EVENT_NAME to mapOf("registrationName" to OnRenderFrameFinished.EVENT_NAME),
@@ -52,7 +53,7 @@ class RnMapboxToolkitViewManager : SimpleViewManager<RnMapboxToolkitView>(),
             OnSourceAddedEvent.EVENT_NAME to mapOf("registrationName" to OnSourceAddedEvent.EVENT_NAME),
             OnStyleDataLoadedEvent.EVENT_NAME to mapOf("registrationName" to OnStyleDataLoadedEvent.EVENT_NAME),
             OnStyleImageMissingEvent.EVENT_NAME to mapOf("registrationName" to OnStyleImageMissingEvent.EVENT_NAME),
-            OnStyleLoadedEvent.EVENT_NAME to mapOf("registrationName" to OnStyleLoadedEvent.EVENT_NAME)
+
         )
     }
 
