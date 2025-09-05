@@ -57,6 +57,18 @@ export type OnSourceRemovedEvent = NativeSyntheticEvent<{
   properties: { sourceId: string };
 }>;
 
+export type OnMapClickEvent = NativeSyntheticEvent<{
+  properties: {
+    pitch: number;
+    bearing: number;
+    zoom: number;
+    coordinate: {
+      latitude: number;
+      longitude: number;
+    };
+  };
+}>;
+
 export type MapViewProps = ViewProps & {
   color?: string;
   styleUrl?: StyleURL;
@@ -425,4 +437,6 @@ export type MapViewProps = ViewProps & {
    * The source has been removed
    */
   onSourceRemoved?: (e: OnSourceRemovedEvent) => void;
+
+  onMapClick?: (e: OnMapClickEvent) => void;
 };

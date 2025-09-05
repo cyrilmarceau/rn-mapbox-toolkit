@@ -52,6 +52,7 @@ export default function App() {
       onSourceRemoved={(e) =>
         console.log('onSourceRemoved', e.nativeEvent.properties.sourceId)
       }
+      onMapClick={(e) => console.log('onMapClick', e.nativeEvent.properties)}
     />
   );
 }

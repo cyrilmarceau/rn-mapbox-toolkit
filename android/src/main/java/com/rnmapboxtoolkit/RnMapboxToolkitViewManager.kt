@@ -9,6 +9,7 @@ import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.viewmanagers.RnMapboxToolkitViewManagerInterface
 import com.facebook.react.viewmanagers.RnMapboxToolkitViewManagerDelegate
 import com.rnmapboxtoolkit.mapper.MapStyleURL
+import com.rnmaps.fabric.event.OnMapClickListenerEvent
 import com.rnmaps.fabric.event.OnMapIdleEvent
 import com.rnmaps.fabric.event.OnMapLoadedEvent
 import com.rnmaps.fabric.event.OnMapLoadingErrorEvent
@@ -56,7 +57,7 @@ class RnMapboxToolkitViewManager : SimpleViewManager<RnMapboxToolkitView>(),
             OnStyleDataLoadedEvent.EVENT_NAME to mapOf("registrationName" to OnStyleDataLoadedEvent.EVENT_NAME),
             OnStyleImageMissingEvent.EVENT_NAME to mapOf("registrationName" to OnStyleImageMissingEvent.EVENT_NAME),
             OnSourceRemovedEvent.EVENT_NAME to mapOf("registrationName" to OnSourceRemovedEvent.EVENT_NAME),
-
+            OnMapClickListenerEvent.EVENT_NAME to mapOf("registrationName" to OnMapClickListenerEvent.EVENT_NAME),
         )
     }
 

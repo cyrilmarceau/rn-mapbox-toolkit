@@ -48,6 +48,20 @@ export type OnSourceRemovedHandler = DirectEventHandler<
   Readonly<{ properties: { sourceId: string } }>
 >;
 
+export type OnMapClickEventHandler = DirectEventHandler<
+  Readonly<{
+    properties: {
+      pitch: Double;
+      bearing: Double;
+      zoom: Double;
+      coordinate: {
+        latitude: Double;
+        longitude: Double;
+      };
+    };
+  }>
+>;
+
 export type StyleURL =
   | 'standard'
   | 'standard-satellite'
@@ -138,6 +152,8 @@ interface NativeComponentsMapViewProps extends ViewProps {
   onRenderFrameStarted?: DirectEventHandler<null>;
   onRenderFrameFinished?: DirectEventHandler<null>;
   onSourceRemoved?: OnSourceRemovedHandler;
+
+  onMapClick?: OnMapClickEventHandler;
 }
 
 export default codegenNativeComponent<NativeComponentsMapViewProps>(
