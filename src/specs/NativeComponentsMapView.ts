@@ -44,6 +44,10 @@ export type OnStyleImageMissingEventHandler = DirectEventHandler<
   Readonly<{ properties: { imageId: string } }>
 >;
 
+export type OnSourceRemovedHandler = DirectEventHandler<
+  Readonly<{ properties: { sourceId: string } }>
+>;
+
 export type StyleURL =
   | 'standard'
   | 'standard-satellite'
@@ -106,6 +110,23 @@ interface NativeComponentsMapViewProps extends ViewProps {
     rotation?: Double;
     visibility?: boolean;
   };
+  gestureOptions?: {
+    doubleTapToZoomInEnabled?: boolean;
+    doubleTouchToZoomOutEnabled?: boolean;
+    increasePinchToZoomThresholdWhenRotating?: boolean;
+    increaseRotateThresholdWhenPinchingToZoom?: boolean;
+    pinchScrollEnabled?: boolean;
+    pinchToZoomDecelerationEnabled?: boolean;
+    pinchToZoomEnabled?: boolean;
+    pitchEnabled?: boolean;
+    quickZoomEnabled?: boolean;
+    rotateDecelerationEnabled?: boolean;
+    rotateEnabled?: boolean;
+    scrollDecelerationEnabled?: boolean;
+    scrollEnabled?: boolean;
+    simultaneousRotateAndPinchToZoomEnabled?: boolean;
+    zoomAnimationAmount?: Double;
+  };
   onMapIdle?: OnMapIdleEventHandler;
   onMapLoaded?: DirectEventHandler<null>;
   onStyleDataLoaded?: OnStyleDataLoadedEventHandler;
@@ -116,6 +137,7 @@ interface NativeComponentsMapViewProps extends ViewProps {
   onStyleImageMissing?: OnStyleImageMissingEventHandler;
   onRenderFrameStarted?: DirectEventHandler<null>;
   onRenderFrameFinished?: DirectEventHandler<null>;
+  onSourceRemoved?: OnSourceRemovedHandler;
 }
 
 export default codegenNativeComponent<NativeComponentsMapViewProps>(

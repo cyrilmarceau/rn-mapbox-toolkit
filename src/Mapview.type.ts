@@ -53,6 +53,10 @@ export type OnStyleDataEvent = NativeSyntheticEvent<{
   };
 }>;
 
+export type OnSourceRemovedEvent = NativeSyntheticEvent<{
+  properties: { sourceId: string };
+}>;
+
 export type MapViewProps = ViewProps & {
   color?: string;
   styleUrl?: StyleURL;
@@ -277,6 +281,83 @@ export type MapViewProps = ViewProps & {
      */
     visibility?: boolean;
   };
+  gestureOptions?: {
+    /**
+     * Whether double tapping the map with one touch results in a zoom-in animation
+     * @default true
+     */
+    doubleTapToZoomInEnabled?: boolean;
+    /**
+     * Whether single tapping the map with two touches results in a zoom-out animation.
+     * @default true
+     */
+    doubleTouchToZoomOutEnabled?: boolean;
+    /**
+     * Whether pinch to zoom threshold increases when rotating
+     * @default true
+     */
+    increasePinchToZoomThresholdWhenRotating?: boolean;
+    /**
+     * Whether rotate threshold increases when pinching to zoom
+     * @default true
+     */
+    increaseRotateThresholdWhenPinchingToZoom?: boolean;
+    /**
+     * Whether pan is enabled for the pinch gesture
+     * @default true
+     */
+    pinchScrollEnabled?: boolean;
+    /**
+     * Whether a deceleration animation following a pinch-to-zoom gesture is enabled.
+     * @default true
+     */
+    pinchToZoomDecelerationEnabled?: boolean;
+    /**
+     * Whether the pinch to zoom gesture is enabled
+     * @default true
+     */
+    pinchToZoomEnabled?: boolean;
+    /**
+     * Whether the pitch gesture is enabled
+     * @default true
+     */
+    pitchEnabled?: boolean;
+    /**
+     * Whether the quick zoom gesture is enabled.
+     * @default true
+     */
+    quickZoomEnabled?: boolean;
+    /**
+     * Whether a deceleration animation following a rotate gesture is enabled
+     */
+    rotateDecelerationEnabled?: boolean;
+    /**
+     * Whether the rotate gesture is enabled
+     * @default true
+     */
+    rotateEnabled?: boolean;
+    /**
+     * Whether a deceleration animation following a scroll gesture is enabled
+     * @default true
+     */
+    scrollDecelerationEnabled?: boolean;
+    /**
+     * Whether the single-touch scroll gesture is enabled
+     * @default true
+     */
+    scrollEnabled?: boolean;
+    /**
+     * Whether rotation is enabled for the pinch to zoom gesture
+     * @default true
+     */
+    simultaneousRotateAndPinchToZoomEnabled?: boolean;
+    /**
+     * The amount by which the zoom level increases or decreases during a double-tap-to-zoom-in or double-touch-to-zoom-out gesture.
+     * 1.0 by default. Must be positive
+     * @default 1.0
+     */
+    zoomAnimationAmount?: number;
+  };
 
   /**
    * The `map` has entered the idle state.
@@ -309,12 +390,39 @@ export type MapViewProps = ViewProps & {
    */
   onStyleLoaded?: () => void;
 
+  /**
+   * Describes an error that has occurred while loading the `map`.
+   * The `type` property defines what resource could not be loaded, and the `message` property will contain a descriptive error message.
+   * - In case of `Source` or `Tile` loading errors, the `sourceId` property will contain the source's name.
+   * For the GeoJSON data loading and parsing errors, `message` will contain the following JSON string: {"dataId": "dataId", "message": "errorMessage" }
+   * - In case of `MapLoadingErrorType.Tile` loading errors, `tileId` will contain the `CanonicalTileID` of the tile.
+   */
   onMapLoadingError?: (e: OnMapLoadingErrorEvent) => void;
 
+  /**
+   * The source has been added
+   */
   onSourceAdded?: (e: OnSourceAddedEvent) => void;
 
+  /**
+   * A style needs an image that is missing from the sprite sheet.
+   * This event is emitted when the `map` renders visible tiles, and one of the required images is missing in the sprite sheet
+   * @param e
+   */
   onStyleImageMissing?: (e: OnStyleImageMissingEvent) => void;
 
+  /**
+   * The `map` started rendering a frame.
+   */
   onRenderFrameStarted?: () => void;
+
+  /**
+   * The `map` finished rendering a frame
+   */
   onRenderFrameFinished?: () => void;
+
+  /**
+   * The source has been removed
+   */
+  onSourceRemoved?: (e: OnSourceRemovedEvent) => void;
 };

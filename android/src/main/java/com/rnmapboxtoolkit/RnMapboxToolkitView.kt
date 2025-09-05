@@ -1,7 +1,6 @@
 package com.rnmapboxtoolkit
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.util.Log
 import android.view.ViewGroup
@@ -14,6 +13,8 @@ import com.mapbox.maps.plugin.attribution.attribution
 import com.mapbox.maps.plugin.attribution.generated.AttributionSettings
 import com.mapbox.maps.plugin.compass.compass
 import com.mapbox.maps.plugin.compass.generated.CompassSettings
+import com.mapbox.maps.plugin.gestures.generated.GesturesSettings
+import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.logo.generated.LogoSettings
 import com.mapbox.maps.plugin.logo.logo
 import com.mapbox.maps.plugin.scalebar.generated.ScaleBarSettings
@@ -22,9 +23,10 @@ import com.rnmapboxtoolkit.extensions.toReadableMap
 import com.rnmaps.fabric.event.OnMapIdleEvent
 import com.rnmaps.fabric.event.OnMapLoadedEvent
 import com.rnmaps.fabric.event.OnMapLoadingErrorEvent
-import com.rnmaps.fabric.event.OnRenderFrameFinished
-import com.rnmaps.fabric.event.OnRenderFrameStarted
+import com.rnmaps.fabric.event.OnRenderFrameFinishedEvent
+import com.rnmaps.fabric.event.OnRenderFrameStartedEvent
 import com.rnmaps.fabric.event.OnSourceAddedEvent
+import com.rnmaps.fabric.event.OnSourceRemovedEvent
 import com.rnmaps.fabric.event.OnStyleDataLoadedEvent
 import com.rnmaps.fabric.event.OnStyleImageMissingEvent
 import com.rnmaps.fabric.event.OnStyleLoadedEvent
@@ -184,7 +186,7 @@ class RnMapboxToolkitView : ViewGroup {
         mapView?.mapboxMap?.subscribeRenderFrameFinished { it ->
             Log.d(TAG, "subscribeRenderFrameFinished >>> ${it}")
             val payload = Arguments.createMap()
-            val event = OnRenderFrameFinished(surfaceId, id, payload)
+            val event = OnRenderFrameFinishedEvent(surfaceId, id, payload)
             eventDispatcher?.dispatchEvent(event)
 
         }?.let { cancelable ->
@@ -192,12 +194,32 @@ class RnMapboxToolkitView : ViewGroup {
         }
         mapView?.mapboxMap?.subscribeRenderFrameStarted { it ->
             val payload = Arguments.createMap()
-            val event = OnRenderFrameStarted(surfaceId, id, payload)
+            val event = OnRenderFrameStartedEvent(surfaceId, id, payload)
             eventDispatcher?.dispatchEvent(event)
             Log.d(TAG, "subscribeRenderFrameStarted >>> ${it}")
         }?.let { cancelable ->
             subscriptions.add(cancelable)
         }
+
+        mapView?.mapboxMap?.subscribeSourceRemoved { it ->
+            Log.d(TAG, "subscribeSourceRemoved >>> ${it}")
+            val payload = Arguments.createMap().apply {
+                putString("sourceId", it.sourceId)
+            }
+            val properties = Arguments.createMap().apply {
+                putMap("properties", payload)
+            }
+            val event = OnSourceRemovedEvent(surfaceId, id, properties)
+            eventDispatcher?.dispatchEvent(event)
+
+        }?.let { cancelable ->
+            subscriptions.add(cancelable)
+        }
+
+        // TODO: Add this list of listener (MapListenerDelegate)
+        /**
+         * https://docs.mapbox.com/android/maps/api/11.14.3/mapbox-maps-android/com.mapbox.maps.plugin.delegates/-map-listener-delegate/subscribe-camera-changed.html
+         */
 
 
     }
@@ -234,6 +256,10 @@ class RnMapboxToolkitView : ViewGroup {
 
     fun setCompassOptions(block: (CompassSettings.Builder) -> Unit) {
         mapView?.compass?.updateSettings(block)
+    }
+
+    fun setGestureOptions(block: (GesturesSettings.Builder) -> Unit) {
+        mapView?.gestures?.updateSettings(block)
     }
 
 }

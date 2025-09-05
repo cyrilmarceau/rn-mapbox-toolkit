@@ -5,6 +5,8 @@ import com.mapbox.maps.plugin.attribution.generated.AttributionSettings
 import com.mapbox.maps.plugin.compass.generated.CompassSettings
 import com.mapbox.maps.plugin.logo.generated.LogoSettings
 import android.view.Gravity
+import com.mapbox.maps.plugin.gestures.generated.GesturesSettings
+
 /**
  * Extension function to convert ReadableMap to Mapbox ScaleBarSettings
  */
@@ -92,7 +94,6 @@ fun ReadableMap?.toAttributionSettingsBlock(): (AttributionSettings.Builder.() -
     }
 }
 
-
 fun ReadableMap?.toLogoSettingsBlock(): (LogoSettings.Builder.() -> Unit)? {
     return this?.let { map ->
         {
@@ -168,6 +169,87 @@ fun ReadableMap.toCompassSettingsBlock(): (CompassSettings.Builder.() -> Unit)? 
             if (map.hasKey("visibility")) {
                 visibility = map.getBoolean("visibility")
             }
+        }
+    }
+}
+
+fun ReadableMap.toGestureSettingsBlock(): (GesturesSettings.Builder.() -> Unit)? {
+    return this.let { map ->
+        {
+            if (map.hasKey("doubleTapToZoomInEnabled")) {
+                doubleTapToZoomInEnabled = map.getBoolean("doubleTapToZoomInEnabled")
+            }
+
+            if (map.hasKey("doubleTouchToZoomOutEnabled")) {
+                doubleTouchToZoomOutEnabled = map.getBoolean("doubleTouchToZoomOutEnabled")
+            }
+
+            if (map.hasKey("increasePinchToZoomThresholdWhenRotating")) {
+                increasePinchToZoomThresholdWhenRotating = map.getBoolean("increasePinchToZoomThresholdWhenRotating")
+            }
+
+            if (map.hasKey("increaseRotateThresholdWhenPinchingToZoom")) {
+                increaseRotateThresholdWhenPinchingToZoom = map.getBoolean("increaseRotateThresholdWhenPinchingToZoom")
+            }
+
+            if (map.hasKey("pinchScrollEnabled")) {
+                pinchScrollEnabled = map.getBoolean("pinchScrollEnabled")
+            }
+
+            if (map.hasKey("pinchToZoomDecelerationEnabled")) {
+                pinchToZoomDecelerationEnabled = map.getBoolean("pinchToZoomDecelerationEnabled")
+            }
+
+            if (map.hasKey("pinchToZoomEnabled")) {
+                pinchToZoomEnabled = map.getBoolean("pinchToZoomEnabled")
+            }
+
+            if (map.hasKey("pitchEnabled")) {
+                pitchEnabled = map.getBoolean("pitchEnabled")
+            }
+
+            if (map.hasKey("quickZoomEnabled")) {
+                quickZoomEnabled = map.getBoolean("quickZoomEnabled")
+            }
+
+            if (map.hasKey("rotateDecelerationEnabled")) {
+                rotateDecelerationEnabled = map.getBoolean("rotateDecelerationEnabled")
+            }
+
+            if (map.hasKey("rotateEnabled")) {
+                rotateEnabled = map.getBoolean("rotateEnabled")
+            }
+
+            if (map.hasKey("scrollDecelerationEnabled")) {
+                scrollDecelerationEnabled = map.getBoolean("scrollDecelerationEnabled")
+            }
+
+            if (map.hasKey("scrollEnabled")) {
+                scrollEnabled = map.getBoolean("scrollEnabled")
+            }
+
+            if (map.hasKey("simultaneousRotateAndPinchToZoomEnabled")) {
+                simultaneousRotateAndPinchToZoomEnabled = map.getBoolean("simultaneousRotateAndPinchToZoomEnabled")
+            }
+
+            if (map.hasKey("zoomAnimationAmount")) {
+                zoomAnimationAmount = map.getDouble("zoomAnimationAmount").toFloat()
+            }
+            // focalPoint ? Really used (https://docs.mapbox.com/android/maps/api/11.14.3/mapbox-maps-android/com.mapbox.maps.plugin.gestures.generated/-gestures-settings/focal-point.html)
+
+
+
+
+
+
+
+
+
+
+
+            // scrollMode ? Really used ? (https://docs.mapbox.com/android/maps/api/11.14.3/mapbox-maps-android/com.mapbox.maps.plugin/-scroll-mode)
+
+
         }
     }
 }

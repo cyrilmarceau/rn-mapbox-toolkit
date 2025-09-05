@@ -26,6 +26,9 @@ export default function App() {
         position: 1,
         marginRight: 80,
       }}
+      gestureOptions={{
+        doubleTapToZoomInEnabled: true,
+      }}
       onMapIdle={(e) =>
         console.log(
           'onMapIdle',
@@ -46,6 +49,9 @@ export default function App() {
       }
       // onRenderFrameStarted={() => console.log('onRenderFrameStarted')}
       // onRenderFrameFinished={() => console.log('onRenderFrameFinished')}
+      onSourceRemoved={(e) =>
+        console.log('onSourceRemoved', e.nativeEvent.properties.sourceId)
+      }
     />
   );
 }

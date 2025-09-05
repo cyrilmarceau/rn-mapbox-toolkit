@@ -12,14 +12,16 @@ import com.rnmapboxtoolkit.mapper.MapStyleURL
 import com.rnmaps.fabric.event.OnMapIdleEvent
 import com.rnmaps.fabric.event.OnMapLoadedEvent
 import com.rnmaps.fabric.event.OnMapLoadingErrorEvent
-import com.rnmaps.fabric.event.OnRenderFrameFinished
-import com.rnmaps.fabric.event.OnRenderFrameStarted
+import com.rnmaps.fabric.event.OnRenderFrameFinishedEvent
+import com.rnmaps.fabric.event.OnRenderFrameStartedEvent
 import com.rnmaps.fabric.event.OnSourceAddedEvent
+import com.rnmaps.fabric.event.OnSourceRemovedEvent
 import com.rnmaps.fabric.event.OnStyleDataLoadedEvent
 import com.rnmaps.fabric.event.OnStyleImageMissingEvent
 import com.rnmaps.fabric.event.OnStyleLoadedEvent
 import toAttributionSettingsBlock
 import toCompassSettingsBlock
+import toGestureSettingsBlock
 import toLogoSettingsBlock
 import toScaleBarSettingsBlock
 
@@ -48,11 +50,12 @@ class RnMapboxToolkitViewManager : SimpleViewManager<RnMapboxToolkitView>(),
             OnStyleLoadedEvent.EVENT_NAME to mapOf("registrationName" to OnStyleLoadedEvent.EVENT_NAME),
             OnMapLoadedEvent.EVENT_NAME to mapOf("registrationName" to OnMapLoadedEvent.EVENT_NAME),
             OnMapLoadingErrorEvent.EVENT_NAME to mapOf("registrationName" to OnMapLoadingErrorEvent.EVENT_NAME),
-            OnRenderFrameFinished.EVENT_NAME to mapOf("registrationName" to OnRenderFrameFinished.EVENT_NAME),
-            OnRenderFrameStarted.EVENT_NAME to mapOf("registrationName" to OnRenderFrameStarted.EVENT_NAME),
+            OnRenderFrameFinishedEvent.EVENT_NAME to mapOf("registrationName" to OnRenderFrameFinishedEvent.EVENT_NAME),
+            OnRenderFrameStartedEvent.EVENT_NAME to mapOf("registrationName" to OnRenderFrameStartedEvent.EVENT_NAME),
             OnSourceAddedEvent.EVENT_NAME to mapOf("registrationName" to OnSourceAddedEvent.EVENT_NAME),
             OnStyleDataLoadedEvent.EVENT_NAME to mapOf("registrationName" to OnStyleDataLoadedEvent.EVENT_NAME),
             OnStyleImageMissingEvent.EVENT_NAME to mapOf("registrationName" to OnStyleImageMissingEvent.EVENT_NAME),
+            OnSourceRemovedEvent.EVENT_NAME to mapOf("registrationName" to OnSourceRemovedEvent.EVENT_NAME),
 
         )
     }
@@ -123,6 +126,17 @@ class RnMapboxToolkitViewManager : SimpleViewManager<RnMapboxToolkitView>(),
         val compassSettingsBlock = value?.toCompassSettingsBlock()
         compassSettingsBlock?.let { block ->
             view?.setCompassOptions(block)
+        }
+    }
+
+    @ReactProp(name = "gestureOptions")
+    override fun setGestureOptions(
+        view: RnMapboxToolkitView?,
+        value: ReadableMap?
+    ) {
+        val gestureSettingsBlock = value?.toGestureSettingsBlock()
+        gestureSettingsBlock?.let { block ->
+            view?.setGestureOptions(block)
         }
     }
 
