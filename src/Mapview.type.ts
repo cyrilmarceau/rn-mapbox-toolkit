@@ -69,6 +69,18 @@ export type OnMapClickEvent = NativeSyntheticEvent<{
   };
 }>;
 
+export type OnMapLongClickEvent = NativeSyntheticEvent<{
+  properties: {
+    pitch: number;
+    bearing: number;
+    zoom: number;
+    coordinate: {
+      latitude: number;
+      longitude: number;
+    };
+  };
+}>;
+
 export type MapViewProps = ViewProps & {
   color?: string;
   styleUrl?: StyleURL;
@@ -439,4 +451,6 @@ export type MapViewProps = ViewProps & {
   onSourceRemoved?: (e: OnSourceRemovedEvent) => void;
 
   onMapClick?: (e: OnMapClickEvent) => void;
+
+  onMapLongClick?: (e: OnMapLongClickEvent) => void;
 };

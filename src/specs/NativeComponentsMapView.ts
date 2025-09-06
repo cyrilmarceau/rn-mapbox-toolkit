@@ -62,6 +62,20 @@ export type OnMapClickEventHandler = DirectEventHandler<
   }>
 >;
 
+export type OnMapLongClickEventHandler = DirectEventHandler<
+  Readonly<{
+    properties: {
+      pitch: Double;
+      bearing: Double;
+      zoom: Double;
+      coordinate: {
+        latitude: Double;
+        longitude: Double;
+      };
+    };
+  }>
+>;
+
 export type StyleURL =
   | 'standard'
   | 'standard-satellite'
@@ -154,6 +168,7 @@ interface NativeComponentsMapViewProps extends ViewProps {
   onSourceRemoved?: OnSourceRemovedHandler;
 
   onMapClick?: OnMapClickEventHandler;
+  onMapLongClick?: OnMapClickEventHandler;
 }
 
 export default codegenNativeComponent<NativeComponentsMapViewProps>(

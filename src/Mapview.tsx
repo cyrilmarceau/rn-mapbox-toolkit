@@ -1,6 +1,6 @@
 import React from 'react';
-import NativeComponentsMapView from './specs/NativeComponentsMapView';
 import type { MapViewProps } from './Mapview.type';
+import NativeComponentsMapView from './specs/NativeComponentsMapView';
 
 const MapView: React.FC<MapViewProps> = (props) => {
   return <NativeComponentsMapView {...props} />;
