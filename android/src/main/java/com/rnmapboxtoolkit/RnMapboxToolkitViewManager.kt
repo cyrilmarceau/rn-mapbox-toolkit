@@ -13,6 +13,7 @@ import com.rnmaps.fabric.event.OnMapClickListenerEvent
 import com.rnmaps.fabric.event.OnMapIdleEvent
 import com.rnmaps.fabric.event.OnMapLoadedEvent
 import com.rnmaps.fabric.event.OnMapLoadingErrorEvent
+import com.rnmaps.fabric.event.OnMapLongClickListenerEvent
 import com.rnmaps.fabric.event.OnRenderFrameFinishedEvent
 import com.rnmaps.fabric.event.OnRenderFrameStartedEvent
 import com.rnmaps.fabric.event.OnSourceAddedEvent
@@ -58,6 +59,7 @@ class RnMapboxToolkitViewManager : SimpleViewManager<RnMapboxToolkitView>(),
             OnStyleImageMissingEvent.EVENT_NAME to mapOf("registrationName" to OnStyleImageMissingEvent.EVENT_NAME),
             OnSourceRemovedEvent.EVENT_NAME to mapOf("registrationName" to OnSourceRemovedEvent.EVENT_NAME),
             OnMapClickListenerEvent.EVENT_NAME to mapOf("registrationName" to OnMapClickListenerEvent.EVENT_NAME),
+            OnMapLongClickListenerEvent.EVENT_NAME to mapOf("registrationName" to OnMapLongClickListenerEvent.EVENT_NAME),
         )
     }
 

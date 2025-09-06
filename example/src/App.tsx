@@ -53,6 +53,9 @@ export default function App() {
         console.log('onSourceRemoved', e.nativeEvent.properties.sourceId)
       }
       onMapClick={(e) => console.log('onMapClick', e.nativeEvent.properties)}
+      onMapLongClick={(e) =>
+        console.log('onMapLongClick', e.nativeEvent.properties)
+      }
     />
   );
 }

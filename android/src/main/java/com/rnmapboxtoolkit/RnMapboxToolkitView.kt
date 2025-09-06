@@ -15,6 +15,7 @@ import com.mapbox.maps.plugin.attribution.generated.AttributionSettings
 import com.mapbox.maps.plugin.compass.compass
 import com.mapbox.maps.plugin.compass.generated.CompassSettings
 import com.mapbox.maps.plugin.gestures.OnMapClickListener
+import com.mapbox.maps.plugin.gestures.OnMapLongClickListener
 import com.mapbox.maps.plugin.gestures.generated.GesturesSettings
 import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.logo.generated.LogoSettings
@@ -26,6 +27,7 @@ import com.rnmaps.fabric.event.OnMapClickListenerEvent
 import com.rnmaps.fabric.event.OnMapIdleEvent
 import com.rnmaps.fabric.event.OnMapLoadedEvent
 import com.rnmaps.fabric.event.OnMapLoadingErrorEvent
+import com.rnmaps.fabric.event.OnMapLongClickListenerEvent
 import com.rnmaps.fabric.event.OnRenderFrameFinishedEvent
 import com.rnmaps.fabric.event.OnRenderFrameStartedEvent
 import com.rnmaps.fabric.event.OnSourceAddedEvent
@@ -43,7 +45,10 @@ class RnMapboxToolkitView : ViewGroup {
 
     private var mapView: MapView? = null
     private val subscriptions = mutableListOf<Cancelable>()
+    private val gestureListeners = mutableListOf<Any>()
     private var clickListener: OnMapClickListener? = null
+    private var longClickListener: OnMapLongClickListener? = null
+
 
     constructor(context: Context?) : super(context) {
         initialize()
@@ -237,8 +242,8 @@ class RnMapboxToolkitView : ViewGroup {
         val surfaceId = UIManagerHelper.getSurfaceId(reactContext)
         val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(reactContext, id)
 
-        mapView?.let { map ->
-            val mClickListener = OnMapClickListener { point ->
+        mapView?.gestures?.let { gestures ->
+            OnMapClickListener { point ->
                 val position = mapView?.mapboxMap?.cameraState
 
                 val payload = Arguments.createMap().apply {
@@ -253,11 +258,30 @@ class RnMapboxToolkitView : ViewGroup {
                 }
                 val event = OnMapClickListenerEvent(surfaceId, id, properties)
                 eventDispatcher?.dispatchEvent(event)
-                true // Consume the event
+                true
+            }.also {
+                gestures.addOnMapClickListener(it)
+                gestureListeners.add(it)
             }
+            OnMapLongClickListener { point ->
+                val position = mapView?.mapboxMap?.cameraState
+                val payload = Arguments.createMap().apply {
+                    putMap("coordinates", point.toReadableMap())
+                    putDouble("zoom", position?.zoom ?: 0.0)
+                    putDouble("bearing", position?.bearing ?: 0.0)
+                    putDouble("pitch", position?.pitch ?: 0.0)
+                }
 
-            mapView?.gestures?.addOnMapClickListener(mClickListener)
-            clickListener = mClickListener
+                val properties = Arguments.createMap().apply {
+                    putMap("properties", payload)
+                }
+                val event = OnMapLongClickListenerEvent(surfaceId, id, properties)
+                eventDispatcher?.dispatchEvent(event)
+                true
+            }.also {
+                gestures.addOnMapLongClickListener(it)
+                gestureListeners.add(it)
+            }
         }
     }
     private fun cleanupMapListeners() {
@@ -266,10 +290,15 @@ class RnMapboxToolkitView : ViewGroup {
     }
 
     private fun cleanupGestureListeners() {
-        clickListener?.let { it ->
-            mapView?.gestures?.removeOnMapClickListener(it)
-            clickListener = null
+        mapView?.gestures?.let { gestures ->
+            gestureListeners.forEach { listener ->
+                when (listener) {
+                    is OnMapClickListener -> gestures.removeOnMapClickListener(listener)
+                    is OnMapLongClickListener -> gestures.removeOnMapLongClickListener(listener)
+                }
+            }
         }
+        gestureListeners.clear()
     }
 
     fun setStyleURL(style: String) {
