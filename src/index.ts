@@ -1,3 +1,3 @@
-import MapView from './Mapview';
+import MapView, { type MapViewRef } from './Mapview';
 
-export { MapView };
+export { MapView, type MapViewRef };

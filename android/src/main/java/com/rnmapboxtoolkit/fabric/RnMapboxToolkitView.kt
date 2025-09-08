@@ -1,4 +1,4 @@
-package com.rnmapboxtoolkit
+package com.rnmapboxtoolkit.fabric
 
 import android.content.Context
 import android.util.AttributeSet
@@ -8,8 +8,9 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.uimanager.UIManagerHelper
 import com.mapbox.common.Cancelable
-import com.mapbox.geojson.Point
+import com.mapbox.maps.EdgeInsets
 import com.mapbox.maps.MapView
+import com.mapbox.maps.plugin.PuckBearing
 import com.mapbox.maps.plugin.attribution.attribution
 import com.mapbox.maps.plugin.attribution.generated.AttributionSettings
 import com.mapbox.maps.plugin.compass.compass
@@ -18,10 +19,15 @@ import com.mapbox.maps.plugin.gestures.OnMapClickListener
 import com.mapbox.maps.plugin.gestures.OnMapLongClickListener
 import com.mapbox.maps.plugin.gestures.generated.GesturesSettings
 import com.mapbox.maps.plugin.gestures.gestures
+import com.mapbox.maps.plugin.locationcomponent.location
 import com.mapbox.maps.plugin.logo.generated.LogoSettings
 import com.mapbox.maps.plugin.logo.logo
 import com.mapbox.maps.plugin.scalebar.generated.ScaleBarSettings
 import com.mapbox.maps.plugin.scalebar.scalebar
+import com.mapbox.maps.plugin.viewport.data.FollowPuckViewportStateBearing
+import com.mapbox.maps.plugin.viewport.data.FollowPuckViewportStateOptions
+import com.mapbox.maps.plugin.viewport.state.FollowPuckViewportState
+import com.mapbox.maps.plugin.viewport.viewport
 import com.rnmapboxtoolkit.extensions.toReadableMap
 import com.rnmaps.fabric.event.OnMapClickListenerEvent
 import com.rnmaps.fabric.event.OnMapIdleEvent
@@ -36,7 +42,6 @@ import com.rnmaps.fabric.event.OnStyleDataLoadedEvent
 import com.rnmaps.fabric.event.OnStyleImageMissingEvent
 import com.rnmaps.fabric.event.OnStyleLoadedEvent
 
-
 class RnMapboxToolkitView : ViewGroup {
 
     companion object {
@@ -46,8 +51,6 @@ class RnMapboxToolkitView : ViewGroup {
     private var mapView: MapView? = null
     private val subscriptions = mutableListOf<Cancelable>()
     private val gestureListeners = mutableListOf<Any>()
-    private var clickListener: OnMapClickListener? = null
-    private var longClickListener: OnMapLongClickListener? = null
 
 
     constructor(context: Context?) : super(context) {
@@ -333,4 +336,10 @@ class RnMapboxToolkitView : ViewGroup {
     fun setGestureOptions(block: (GesturesSettings.Builder) -> Unit) {
         mapView?.gestures?.updateSettings(block)
     }
+
+    fun getZoom(): Double? {
+        return mapView?.mapboxMap?.cameraState?.zoom
+    }
+
+
 }
