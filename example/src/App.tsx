@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, StyleSheet } from 'react-native';
-import { MapView, type MapViewRef } from 'rn-mapbox-toolkit';
+import { Camera, MapView, type MapViewRef } from 'rn-mapbox-toolkit';
 
 export default function App() {
   const mapRef = React.useRef<MapViewRef | null>(null);
@@ -69,7 +69,10 @@ export default function App() {
         onMapLongClick={(e) =>
           console.log('onMapLongClick', e.nativeEvent.properties)
         }
-      />
+      >
+        <Camera />
+      </MapView>
+
       <Button title="Retrieve zoom" onPress={handleGetZoom} />
     </>
   );

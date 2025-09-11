@@ -1,7 +1,7 @@
 import React from 'react';
 import type { MapViewProps } from './Mapview.type';
-import NativeComponentsMapView from './specs/NativeComponentsMapView';
-import MapViewTurboModule from './specs/NativeMapViewModule';
+import NativeComponentsMapView from '../../specs/NativeComponentsMapView';
+import MapViewTurboModule from '../../specs/NativeMapViewModule';
 import { findNodeHandle } from 'react-native';
 
 export interface MapViewRef {

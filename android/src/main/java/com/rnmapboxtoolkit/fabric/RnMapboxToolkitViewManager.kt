@@ -4,6 +4,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
+import com.facebook.react.uimanager.ViewGroupManager
 import com.facebook.react.uimanager.ViewManagerDelegate
 import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.viewmanagers.RnMapboxToolkitViewManagerDelegate
@@ -28,18 +29,19 @@ import toLogoSettingsBlock
 import toScaleBarSettingsBlock
 
 @ReactModule(name = RnMapboxToolkitViewManager.NAME)
-class RnMapboxToolkitViewManager : SimpleViewManager<RnMapboxToolkitView>(),
+class RnMapboxToolkitViewManager :
+    ViewGroupManager<RnMapboxToolkitView>(),
     RnMapboxToolkitViewManagerInterface<RnMapboxToolkitView> {
+
+    override fun getName(): String {
+        return NAME
+    }
 
     private val mDelegate: ViewManagerDelegate<RnMapboxToolkitView> =
         RnMapboxToolkitViewManagerDelegate(this)
 
     override fun getDelegate(): ViewManagerDelegate<RnMapboxToolkitView>? {
         return mDelegate
-    }
-
-    override fun getName(): String {
-        return NAME
     }
 
     public override fun createViewInstance(context: ThemedReactContext): RnMapboxToolkitView {
