@@ -1,13 +1,45 @@
 import React from 'react';
 import { Button, StyleSheet } from 'react-native';
-import { Camera, MapView, type MapViewRef } from 'rn-mapbox-toolkit';
+import {
+  Camera,
+  type CameraRef,
+  MapView,
+  type MapViewRef,
+} from 'rn-mapbox-toolkit';
 
 export default function App() {
   const mapRef = React.useRef<MapViewRef | null>(null);
+  const cameraRef = React.useRef<CameraRef | null>(null);
+
+  const handleCameraZoom = async () => {
+    try {
+      const zoom = await cameraRef.current?.getZoomLevel();
+      console.log(zoom);
+    } catch (error) {
+      console.error('An error occured', error);
+    }
+  };
 
   const handleGetZoom = async () => {
     try {
-      console.log(await mapRef.current?.getZoomLevel());
+      const zoomLevel = await mapRef.current?.getZoomLevel();
+      console.log(zoomLevel);
+    } catch (error) {
+      console.error('An error occured', error);
+    }
+  };
+
+  const handleFlyTo = async () => {
+    try {
+      await cameraRef.current?.flyTo(
+        {
+          center: { longitude: 2.333333, latitude: 48.866667 },
+        },
+        {
+          duration: 5000,
+          startDelay: 2000,
+        }
+      );
     } catch (error) {
       console.error('An error occured', error);
     }
@@ -70,10 +102,12 @@ export default function App() {
           console.log('onMapLongClick', e.nativeEvent.properties)
         }
       >
-        <Camera />
+        <Camera ref={cameraRef} />
       </MapView>
 
+      <Button title="FlyTo" onPress={handleFlyTo} />
       <Button title="Retrieve zoom" onPress={handleGetZoom} />
+      <Button title="Retrieve camera zoom" onPress={handleCameraZoom} />
     </>
   );
 }

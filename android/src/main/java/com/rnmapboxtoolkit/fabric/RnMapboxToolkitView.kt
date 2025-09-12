@@ -13,6 +13,7 @@ import com.facebook.react.views.view.ReactViewGroup
 import com.mapbox.common.Cancelable
 import com.mapbox.maps.EdgeInsets
 import com.mapbox.maps.MapView
+import com.mapbox.maps.MapboxMap
 import com.mapbox.maps.plugin.PuckBearing
 import com.mapbox.maps.plugin.attribution.attribution
 import com.mapbox.maps.plugin.attribution.generated.AttributionSettings
@@ -62,6 +63,7 @@ class RnMapboxToolkitView(private val context: ThemedReactContext) : ReactViewGr
         initialize()
     }
 
+    fun getMapboxMap(): MapboxMap? = mapView?.mapboxMap
 
     override fun addView(child: View?, index: Int) {
         if (child is AbstractMapFeature) {

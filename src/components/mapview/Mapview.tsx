@@ -19,7 +19,11 @@ const MapView = React.forwardRef<MapViewRef, MapViewProps>((props, ref) => {
       throw new Error('Could not find native MapView ref');
     }
 
-    return await MapViewTurboModule.getZoomLevel(viewTag);
+    try {
+      return await MapViewTurboModule.getZoomLevel(viewTag);
+    } catch (error) {
+      throw new Error('Failed to execute getZoomLevel');
+    }
   };
 
   React.useImperativeHandle(ref, () => ({

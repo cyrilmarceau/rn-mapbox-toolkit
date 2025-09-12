@@ -29,10 +29,11 @@ abstract class AbstractMapFeature(context: Context?) : ReactViewGroup(context) {
         return true
     }
 
-    internal fun withMapView(callback: (mapView: RnMapboxToolkitView) -> Unit) {
+    internal fun <T> withMapView(callback: (mapView: RnMapboxToolkitView) -> T): T? {
         val mapView = mMapView
-        if (mapView == null) {
-            mWithMapViewCallbacks.add(callback)
+        return if (mapView == null) {
+            mWithMapViewCallbacks.add { callback(it) }
+            null
         } else {
             callback(mapView)
         }

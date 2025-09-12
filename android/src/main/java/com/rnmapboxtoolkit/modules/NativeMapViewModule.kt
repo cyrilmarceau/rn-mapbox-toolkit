@@ -32,6 +32,4 @@ class NativeMapViewModule(private val reactContext: ReactApplicationContext): Na
             promise.reject("GET_ZOOM_LEVEL_ERROR", "Error getting zoom level: ${e.message}")
         }
     }
-
-
 }
