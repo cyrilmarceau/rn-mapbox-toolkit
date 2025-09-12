@@ -1,6 +1,6 @@
 import type { NativeSyntheticEvent } from 'react-native';
-import type { LatLng, PositionToGravity } from './common/shared.types';
-import type { StyleURL } from './specs/NativeComponentsMapView';
+import type { LatLng, PositionToGravity } from '../../common/shared.types';
+import type { StyleURL } from '../../specs/NativeComponentsMapView';
 import type { ViewProps } from 'react-native';
 
 export type OnMapIdleEvent = NativeSyntheticEvent<{

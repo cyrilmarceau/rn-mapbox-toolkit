@@ -1,15 +1,20 @@
-package com.rnmapboxtoolkit
+package com.rnmapboxtoolkit.fabric
 
 import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactContext
+import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.UIManagerHelper
+import com.facebook.react.views.view.ReactViewGroup
 import com.mapbox.common.Cancelable
-import com.mapbox.geojson.Point
+import com.mapbox.maps.EdgeInsets
 import com.mapbox.maps.MapView
+import com.mapbox.maps.MapboxMap
+import com.mapbox.maps.plugin.PuckBearing
 import com.mapbox.maps.plugin.attribution.attribution
 import com.mapbox.maps.plugin.attribution.generated.AttributionSettings
 import com.mapbox.maps.plugin.compass.compass
@@ -18,10 +23,16 @@ import com.mapbox.maps.plugin.gestures.OnMapClickListener
 import com.mapbox.maps.plugin.gestures.OnMapLongClickListener
 import com.mapbox.maps.plugin.gestures.generated.GesturesSettings
 import com.mapbox.maps.plugin.gestures.gestures
+import com.mapbox.maps.plugin.locationcomponent.location
 import com.mapbox.maps.plugin.logo.generated.LogoSettings
 import com.mapbox.maps.plugin.logo.logo
 import com.mapbox.maps.plugin.scalebar.generated.ScaleBarSettings
 import com.mapbox.maps.plugin.scalebar.scalebar
+import com.mapbox.maps.plugin.viewport.data.FollowPuckViewportStateBearing
+import com.mapbox.maps.plugin.viewport.data.FollowPuckViewportStateOptions
+import com.mapbox.maps.plugin.viewport.state.FollowPuckViewportState
+import com.mapbox.maps.plugin.viewport.viewport
+
 import com.rnmapboxtoolkit.extensions.toReadableMap
 import com.rnmaps.fabric.event.OnMapClickListenerEvent
 import com.rnmaps.fabric.event.OnMapIdleEvent
@@ -36,32 +47,40 @@ import com.rnmaps.fabric.event.OnStyleDataLoadedEvent
 import com.rnmaps.fabric.event.OnStyleImageMissingEvent
 import com.rnmaps.fabric.event.OnStyleLoadedEvent
 
-
-class RnMapboxToolkitView : ViewGroup {
+class RnMapboxToolkitView(private val context: ThemedReactContext) : ReactViewGroup(context)  {
 
     companion object {
         const val TAG = "RnMapboxToolkitView"
     }
 
+
     private var mapView: MapView? = null
     private val subscriptions = mutableListOf<Cancelable>()
     private val gestureListeners = mutableListOf<Any>()
-    private var clickListener: OnMapClickListener? = null
-    private var longClickListener: OnMapLongClickListener? = null
+    private val mapFeatures = mutableListOf<AbstractMapFeature>()
 
-
-    constructor(context: Context?) : super(context) {
+    init {
         initialize()
     }
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
-        initialize()
+    fun getMapboxMap(): MapboxMap? = mapView?.mapboxMap
+
+    override fun addView(child: View?, index: Int) {
+        if (child is AbstractMapFeature) {
+            mapFeatures.add(child)
+            child.addToMap(this)
+        } else {
+            super.addView(child, index)
+        }
     }
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context, attrs, defStyleAttr
-    ) {
-        initialize()
+    override fun removeView(child: View?) {
+        if (child is AbstractMapFeature) {
+            mapFeatures.remove(child)
+            child.removeFromMap(this, RemovalReason.VIEW_REMOVAL)
+        } else {
+            super.removeView(child)
+        }
     }
 
     private fun initialize() {
@@ -86,8 +105,14 @@ class RnMapboxToolkitView : ViewGroup {
         super.onDetachedFromWindow()
         cleanupMapListeners()
         cleanupGestureListeners()
-        mapView = null
+
         subscriptions.clear()
+
+        mapFeatures.forEach { it.removeFromMap(this, RemovalReason.ON_DESTROY) }
+        mapFeatures.clear()
+
+        mapView = null
+
     }
 
     private fun initializeMap() {
@@ -97,8 +122,10 @@ class RnMapboxToolkitView : ViewGroup {
                     LayoutParams.MATCH_PARENT,
                     LayoutParams.MATCH_PARENT
                 )
+            }.also { mv ->
+                addView(mv)
             }
-            addView(mapView)
+
 
         } catch (e: Exception) {
             Log.e(TAG, "Error initializing map", e)
@@ -333,4 +360,10 @@ class RnMapboxToolkitView : ViewGroup {
     fun setGestureOptions(block: (GesturesSettings.Builder) -> Unit) {
         mapView?.gestures?.updateSettings(block)
     }
+
+    fun getZoom(): Double? {
+        return mapView?.mapboxMap?.cameraState?.zoom
+    }
+
+
 }

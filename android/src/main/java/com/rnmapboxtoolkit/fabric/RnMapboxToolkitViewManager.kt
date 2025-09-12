@@ -1,13 +1,14 @@
-package com.rnmapboxtoolkit
+package com.rnmapboxtoolkit.fabric
 
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
+import com.facebook.react.uimanager.ViewGroupManager
 import com.facebook.react.uimanager.ViewManagerDelegate
 import com.facebook.react.uimanager.annotations.ReactProp
-import com.facebook.react.viewmanagers.RnMapboxToolkitViewManagerInterface
 import com.facebook.react.viewmanagers.RnMapboxToolkitViewManagerDelegate
+import com.facebook.react.viewmanagers.RnMapboxToolkitViewManagerInterface
 import com.rnmapboxtoolkit.mapper.MapStyleURL
 import com.rnmaps.fabric.event.OnMapClickListenerEvent
 import com.rnmaps.fabric.event.OnMapIdleEvent
@@ -27,19 +28,20 @@ import toGestureSettingsBlock
 import toLogoSettingsBlock
 import toScaleBarSettingsBlock
 
-
 @ReactModule(name = RnMapboxToolkitViewManager.NAME)
-class RnMapboxToolkitViewManager : SimpleViewManager<RnMapboxToolkitView>(),
+class RnMapboxToolkitViewManager :
+    ViewGroupManager<RnMapboxToolkitView>(),
     RnMapboxToolkitViewManagerInterface<RnMapboxToolkitView> {
+
+    override fun getName(): String {
+        return NAME
+    }
+
     private val mDelegate: ViewManagerDelegate<RnMapboxToolkitView> =
         RnMapboxToolkitViewManagerDelegate(this)
 
     override fun getDelegate(): ViewManagerDelegate<RnMapboxToolkitView>? {
         return mDelegate
-    }
-
-    override fun getName(): String {
-        return NAME
     }
 
     public override fun createViewInstance(context: ThemedReactContext): RnMapboxToolkitView {
@@ -48,22 +50,20 @@ class RnMapboxToolkitViewManager : SimpleViewManager<RnMapboxToolkitView>(),
 
     override fun getExportedCustomDirectEventTypeConstants(): Map<String?, Any?>? {
         return mapOf(
-            OnMapIdleEvent.EVENT_NAME to mapOf("registrationName" to OnMapIdleEvent.EVENT_NAME),
-            OnStyleLoadedEvent.EVENT_NAME to mapOf("registrationName" to OnStyleLoadedEvent.EVENT_NAME),
-            OnMapLoadedEvent.EVENT_NAME to mapOf("registrationName" to OnMapLoadedEvent.EVENT_NAME),
-            OnMapLoadingErrorEvent.EVENT_NAME to mapOf("registrationName" to OnMapLoadingErrorEvent.EVENT_NAME),
-            OnRenderFrameFinishedEvent.EVENT_NAME to mapOf("registrationName" to OnRenderFrameFinishedEvent.EVENT_NAME),
-            OnRenderFrameStartedEvent.EVENT_NAME to mapOf("registrationName" to OnRenderFrameStartedEvent.EVENT_NAME),
-            OnSourceAddedEvent.EVENT_NAME to mapOf("registrationName" to OnSourceAddedEvent.EVENT_NAME),
-            OnStyleDataLoadedEvent.EVENT_NAME to mapOf("registrationName" to OnStyleDataLoadedEvent.EVENT_NAME),
-            OnStyleImageMissingEvent.EVENT_NAME to mapOf("registrationName" to OnStyleImageMissingEvent.EVENT_NAME),
-            OnSourceRemovedEvent.EVENT_NAME to mapOf("registrationName" to OnSourceRemovedEvent.EVENT_NAME),
-            OnMapClickListenerEvent.EVENT_NAME to mapOf("registrationName" to OnMapClickListenerEvent.EVENT_NAME),
-            OnMapLongClickListenerEvent.EVENT_NAME to mapOf("registrationName" to OnMapLongClickListenerEvent.EVENT_NAME),
+            OnMapIdleEvent.Companion.EVENT_NAME to mapOf("registrationName" to OnMapIdleEvent.Companion.EVENT_NAME),
+            OnStyleLoadedEvent.Companion.EVENT_NAME to mapOf("registrationName" to OnStyleLoadedEvent.Companion.EVENT_NAME),
+            OnMapLoadedEvent.Companion.EVENT_NAME to mapOf("registrationName" to OnMapLoadedEvent.Companion.EVENT_NAME),
+            OnMapLoadingErrorEvent.Companion.EVENT_NAME to mapOf("registrationName" to OnMapLoadingErrorEvent.Companion.EVENT_NAME),
+            OnRenderFrameFinishedEvent.Companion.EVENT_NAME to mapOf("registrationName" to OnRenderFrameFinishedEvent.Companion.EVENT_NAME),
+            OnRenderFrameStartedEvent.Companion.EVENT_NAME to mapOf("registrationName" to OnRenderFrameStartedEvent.Companion.EVENT_NAME),
+            OnSourceAddedEvent.Companion.EVENT_NAME to mapOf("registrationName" to OnSourceAddedEvent.Companion.EVENT_NAME),
+            OnStyleDataLoadedEvent.Companion.EVENT_NAME to mapOf("registrationName" to OnStyleDataLoadedEvent.Companion.EVENT_NAME),
+            OnStyleImageMissingEvent.Companion.EVENT_NAME to mapOf("registrationName" to OnStyleImageMissingEvent.Companion.EVENT_NAME),
+            OnSourceRemovedEvent.Companion.EVENT_NAME to mapOf("registrationName" to OnSourceRemovedEvent.Companion.EVENT_NAME),
+            OnMapClickListenerEvent.Companion.EVENT_NAME to mapOf("registrationName" to OnMapClickListenerEvent.Companion.EVENT_NAME),
+            OnMapLongClickListenerEvent.Companion.EVENT_NAME to mapOf("registrationName" to OnMapLongClickListenerEvent.Companion.EVENT_NAME),
         )
     }
-
-
 
     @ReactProp(name = "color")
     override fun setColor(view: RnMapboxToolkitView?, color: String?) {
@@ -75,7 +75,7 @@ class RnMapboxToolkitViewManager : SimpleViewManager<RnMapboxToolkitView>(),
         view: RnMapboxToolkitView?,
         value: String?
     ) {
-        val style = MapStyleURL.toMapboxStyleUrl(value)
+        val style = MapStyleURL.Companion.toMapboxStyleUrl(value)
         view?.setStyleURL(style)
 
     }
@@ -142,6 +142,7 @@ class RnMapboxToolkitViewManager : SimpleViewManager<RnMapboxToolkitView>(),
             view?.setGestureOptions(block)
         }
     }
+
 
     companion object {
         const val NAME = "RnMapboxToolkitView"

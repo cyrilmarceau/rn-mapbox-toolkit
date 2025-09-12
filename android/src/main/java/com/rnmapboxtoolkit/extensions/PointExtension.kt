@@ -4,6 +4,7 @@ import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import com.mapbox.geojson.Point
+import org.json.JSONObject
 
 fun Point.toReadableMap() : WritableNativeMap {
     return WritableNativeMap().apply {
