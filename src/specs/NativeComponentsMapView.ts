@@ -91,7 +91,7 @@ export type StyleURL =
 interface NativeComponentsMapViewProps extends ViewProps {
   color?: string;
   styleUrl?: WithDefault<StyleURL, 'standard'>;
-  showScaleBar: boolean;
+  showScaleBar?: boolean;
   scaleBarOptions?: {
     marginLeft?: Float;
     marginTop?: Float;

@@ -85,7 +85,7 @@ export type MapViewProps = ViewProps & {
   color?: string;
   styleUrl?: StyleURL;
 
-  showScaleBar: boolean;
+  showScaleBar?: boolean;
   scaleBarOptions?: {
     /**
      * Defines the margin to the bottom that the attribution icon honors. Default value: 4. This property is specified in pixels.

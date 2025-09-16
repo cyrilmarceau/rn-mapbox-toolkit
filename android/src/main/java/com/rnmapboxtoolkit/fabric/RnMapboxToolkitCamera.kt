@@ -1,6 +1,9 @@
 package com.rnmapboxtoolkit.fabric
 import android.annotation.SuppressLint
+import android.util.Log
 import com.facebook.react.uimanager.ThemedReactContext
+import com.mapbox.maps.CameraBoundsOptions
+import com.mapbox.maps.MapboxMap
 import com.mapbox.maps.plugin.animation.CameraAnimatorsFactory
 import com.mapbox.maps.plugin.animation.easeTo
 import com.mapbox.maps.plugin.animation.flyTo
@@ -14,6 +17,19 @@ class RnMapboxToolkitCamera(context: ThemedReactContext) : AbstractMapFeature(co
     companion object {
         const val TAG = "RnMapboxToolkitCamera"
     }
+
+    /**
+     * Default settings for bounds for avoid each new state is preserved when props change
+     */
+    private var pendingBounds = PendingBounds()
+
+    data class PendingBounds(
+        var maxPitch: Double? = null,
+        var minPitch: Double? = null,
+        var minZoom: Double? = null,
+        var maxZoom: Double? = null
+    )
+
 
     override fun addToMap(mapView: RnMapboxToolkitView) {
         super.addToMap(mapView)
@@ -53,7 +69,9 @@ class RnMapboxToolkitCamera(context: ThemedReactContext) : AbstractMapFeature(co
             animationJson.toAnimationOptions()
         }
 
-        mMapView?.getMapboxMap()?.flyTo(cameraOptions, animOptions)
+        withMapView { mapView ->
+            mapView.getMapboxMap()?.flyTo(cameraOptions, animOptions)
+        }
     }
 
     fun easeTo(cameraOptions: String, animationOptions: String?) {
@@ -65,6 +83,43 @@ class RnMapboxToolkitCamera(context: ThemedReactContext) : AbstractMapFeature(co
             animationJson.toAnimationOptions()
         }
 
-        mMapView?.getMapboxMap()?.easeTo(cameraOptions, animOptions)
+        withMapView { mapView ->
+            mapView.getMapboxMap()?.easeTo(cameraOptions, animOptions)
+        }
+    }
+
+    fun setMaxPitch(maxPitch: Double) {
+        pendingBounds.maxPitch = maxPitch
+        updateBounds()
+    }
+
+    fun setMinPitch(minPitch: Double) {
+        pendingBounds.minPitch = minPitch
+        updateBounds()
+    }
+
+    fun setMinZoom(minZoom: Double) {
+        pendingBounds.minZoom = minZoom
+        updateBounds()
+    }
+
+    fun setMaxZoom(maxZoom: Double) {
+        pendingBounds.maxZoom = maxZoom
+        updateBounds()
+    }
+
+    private fun updateBounds() {
+        val builder = CameraBoundsOptions.Builder()
+
+        pendingBounds.maxPitch?.let { builder.maxPitch(it) }
+        pendingBounds.minPitch?.let { builder.minPitch(it) }
+        pendingBounds.minZoom?.let { builder.minZoom(it) }
+        pendingBounds.maxZoom?.let { builder.maxZoom(it) }
+
+        withMapView { it ->
+            it.getMapboxMap()?.setBounds(builder.build())
+        }
     }
 }
+
+

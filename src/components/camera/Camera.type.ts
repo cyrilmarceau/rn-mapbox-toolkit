@@ -1,6 +1,23 @@
 import type { LatLng, Point } from '../../common/shared.types';
 
-export type CameraViewProps = {};
+export type CameraViewProps = {
+  /**
+   * The minimum zoom level, in Mapbox zoom levels 0-25.5.
+   */
+  minZoom?: number;
+  /**
+   * The maximum zoom level, in Mapbox zoom levels 0-25.5.
+   */
+  maxZoom?: number;
+  /**
+   * The minimum allowed pitch value in degrees.
+   */
+  minPitch?: number;
+  /**
+   * The maximum allowed pitch value in degrees.
+   */
+  maxPitch?: number;
+};
 
 export type CameraOptions = {
   center: LatLng;

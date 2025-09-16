@@ -30,6 +30,34 @@ class RnMapboxToolkitCameraManager :
         return RnMapboxToolkitCamera(context)
     }
 
+    override fun setMinZoom(
+        view: RnMapboxToolkitCamera?,
+        minZoom: Double
+    ) {
+        view?.setMinZoom(minZoom)
+    }
+
+    override fun setMaxZoom(
+        view: RnMapboxToolkitCamera?,
+        maxZoom: Double
+    ) {
+        view?.setMaxZoom(maxZoom)
+    }
+
+    override fun setMinPitch(
+        view: RnMapboxToolkitCamera?,
+        minPitch: Double
+    ) {
+        view?.setMinPitch(minPitch)
+    }
+
+    override fun setMaxPitch(
+        view: RnMapboxToolkitCamera?,
+        maxPitch: Double
+    ) {
+        view?.setMaxPitch(maxPitch)
+    }
+
     override fun flyTo(view: RnMapboxToolkitCamera, cameraOptions: String, animationOptions: String?) {
         view.flyTo(cameraOptions, animationOptions)
     }
