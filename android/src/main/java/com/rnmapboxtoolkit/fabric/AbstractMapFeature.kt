@@ -38,4 +38,7 @@ abstract class AbstractMapFeature(context: Context?) : ReactViewGroup(context) {
             callback(mapView)
         }
     }
+
+    open fun addChild(child: AbstractMapFeature) {}
+    open fun removeChild(child: AbstractMapFeature) {}
 }

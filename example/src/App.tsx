@@ -4,6 +4,7 @@ import ScreenList from './GroupScreen';
 import MapSettings from './screens/MapSettings';
 import MapCamera from './screens/MapCamera';
 import MapEventsListener from './screens/MapEventsListener';
+import MapLineString from './screens/MapLineString';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +20,7 @@ export default function App() {
             component={MapEventsListener}
           />
           <Stack.Screen name="MapCamera" component={MapCamera} />
+          <Stack.Screen name="MapLineString" component={MapLineString} />
         </Stack.Navigator>
       </NavigationContainer>
     </>

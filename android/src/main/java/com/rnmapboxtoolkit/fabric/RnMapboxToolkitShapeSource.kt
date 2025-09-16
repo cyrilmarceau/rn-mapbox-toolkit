@@ -1,0 +1,95 @@
+package com.rnmapboxtoolkit.fabric
+
+import android.annotation.SuppressLint
+import android.graphics.Color
+import android.util.Log
+import android.view.View
+import com.facebook.react.uimanager.ThemedReactContext
+import com.mapbox.geojson.FeatureCollection
+import com.mapbox.maps.coroutine.awaitLoadStyle
+import com.mapbox.maps.coroutine.awaitStyle
+import com.mapbox.maps.extension.style.layers.addLayer
+import com.mapbox.maps.extension.style.layers.generated.CircleLayer
+import com.mapbox.maps.extension.style.layers.generated.LineLayer
+import com.mapbox.maps.extension.style.sources.addSource
+import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+
+
+@SuppressLint("ViewConstructor")
+class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeature(context) {
+    companion object {
+        const val TAG = "ShapeSource"
+    }
+
+    private var sourceID: String = "default-source-id"
+    private var shape: String? = null
+    private val job = Job()
+    private val scope = CoroutineScope(Dispatchers.Main + job)
+    private val childLayers = mutableListOf<AbstractMapFeature>()
+
+    override fun addToMap(mapView: RnMapboxToolkitView) {
+        Log.d(TAG, "addToMap()")
+        super.addToMap(mapView)
+        updateSourceAndLayers()
+    }
+
+    override fun removeFromMap(mapView: RnMapboxToolkitView, reason: RemovalReason): Boolean {
+        Log.d(TAG, "removeFromMap")
+        withMapView { map ->
+            scope.launch {
+                map.getMapboxMap()?.style?.let { style ->
+                    childLayers.forEach { it.removeFromMap(map, reason) }
+                    style.removeStyleSource(sourceID)
+                }
+            }
+        }
+        return super.removeFromMap(mapView, reason)
+    }
+
+    override fun addChild(child: AbstractMapFeature) {
+        Log.d(TAG, "addChild()")
+        childLayers.add(child)
+        updateSourceAndLayers()
+    }
+
+    override fun removeChild(child: AbstractMapFeature) {
+        childLayers.remove(child)
+        updateSourceAndLayers()
+    }
+
+    private fun updateSourceAndLayers() {
+        withMapView { mapView ->
+            scope.launch {
+                mapView.getMapboxMap()?.awaitStyle()?.let { style ->
+                    childLayers.forEach { it.removeFromMap(mapView, RemovalReason.ON_DESTROY) }
+                    style.removeStyleSource(sourceID)
+
+                    shape?.let { shapeData ->
+                        val source = GeoJsonSource.Builder(sourceID)
+                            .featureCollection(FeatureCollection.fromJson(shapeData))
+                            .build()
+                        style.addSource(source)
+                    }
+
+                    childLayers.forEach { it.addToMap(mapView) }
+                }
+            }
+        }
+    }
+
+    fun setShape(shape: String?) {
+        this.shape = shape
+        updateSourceAndLayers()
+    }
+
+    fun setSourceID(value: String?) {
+        value?.let { sourceID = it }
+        updateSourceAndLayers()
+    }
+}
+
+
