@@ -60,6 +60,8 @@ export default function MapCircleLayer() {
         <Camera ref={cameraRef} />
         <ShapeSource shape={shape} sourceID="source-paris">
           <CircleLayer
+            maxZoom={10}
+            // minZoom={20}
             layerID="test-1"
             sourceID="source-paris"
             layerStyle={{

@@ -8,6 +8,7 @@ import com.mapbox.maps.MapboxStyleManager
 import com.mapbox.maps.coroutine.awaitStyle
 import com.mapbox.maps.extension.style.layers.addLayer
 import com.mapbox.maps.extension.style.layers.generated.CircleLayer
+import com.mapbox.maps.extension.style.layers.getLayer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,6 +28,8 @@ class RnMapboxToolkitCircleLayer(context: ThemedReactContext) : AbstractMapFeatu
 
     private var sourceID: String? = null
     private var layerID: String? = null
+    private var maxZoom: Double? = null;
+    private var minZoom: Double? = null;
 
     /* RN can call setLayerStyle before layer is add to tree
     */
@@ -78,14 +81,13 @@ class RnMapboxToolkitCircleLayer(context: ThemedReactContext) : AbstractMapFeatu
             }
         }
 
-        val layer = CircleLayer(currentLayerID, currentSourceID).apply {
-        }
+        val layer = CircleLayer(currentLayerID, currentSourceID)
 
         style.addLayer(layer)
 
         // If style is call before layer is add to map, apply style to layer
         pendingStyle?.let { styleJson ->
-            applyStyleToLayer(style, currentLayerID, styleJson)
+            applyPropsToLayer(style, currentLayerID, styleJson)
         }
     }
 
@@ -94,14 +96,16 @@ class RnMapboxToolkitCircleLayer(context: ThemedReactContext) : AbstractMapFeatu
     }
 
     fun setLayerID(value: String?) {
-        value?.let { it -> this.layerID = it }
+        layerID = value
     }
 
-    fun setMaxZoom(value: Double) {
-
+    fun setMaxZoom(value: Double?) {
+        maxZoom = value
     }
 
-    fun setMinZoom(value: Double) {}
+    fun setMinZoom(value: Double?) {
+        minZoom = value
+    }
 
     fun setLayerStyle(value: String?) {
         pendingStyle = value
@@ -148,16 +152,23 @@ class RnMapboxToolkitCircleLayer(context: ThemedReactContext) : AbstractMapFeatu
             }
         }
 
-        applyStyleToLayer(style, currentLayerID, styleJson)
+        applyPropsToLayer(style, currentLayerID, styleJson)
     }
 
-    private fun applyStyleToLayer(style: MapboxStyleManager, layerId: String, styleJson: String) {
+    private fun applyPropsToLayer(style: MapboxStyleManager, layerId: String, styleJson: String) {
         Log.d(TAG, "Applying style to layer '$layerId'")
 
         val properties = Value.fromJson(styleJson)
         if (!properties.isValue) {
             Log.e(TAG, "JSON parse error for layer '$layerId': ${properties.error}")
             return
+        }
+
+        style.getLayer(layerId).let { layer ->
+            Log.d(TAG, "minZoom: $minZoom")
+            Log.d(TAG, "maxZoom: $maxZoom")
+            minZoom?.let { layer?.minZoom(it) }
+            maxZoom?.let { layer?.maxZoom(it) }
         }
 
         val result = style.setStyleLayerProperties(layerId, properties.value!!)

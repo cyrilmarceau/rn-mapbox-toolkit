@@ -10,7 +10,7 @@ export type CircleLayerProps = {
 
   minZoom?: number;
 
-  maxzoom?: number;
+  maxZoom?: number;
 
   layerStyle?: {
     /**

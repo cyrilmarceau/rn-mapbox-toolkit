@@ -9,6 +9,7 @@ import com.mapbox.maps.MapboxStyleManager
 import com.mapbox.maps.coroutine.awaitStyle
 import com.mapbox.maps.extension.style.layers.addLayer
 import com.mapbox.maps.extension.style.layers.generated.LineLayer
+import com.mapbox.maps.extension.style.layers.getLayer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -28,6 +29,8 @@ class RnMapboxToolkitLineLayer(context: ThemedReactContext) : AbstractMapFeature
 
     private var sourceID: String? = null
     private var layerID: String? = null
+    private var maxZoom: Double? = null;
+    private var minZoom: Double? = null;
 
     /* RN can call setLayerStyle before layer is add to tree
     */
@@ -98,11 +101,13 @@ class RnMapboxToolkitLineLayer(context: ThemedReactContext) : AbstractMapFeature
         value?.let { it -> this.layerID = it }
     }
 
-    fun setMaxZoom(value: Double) {
-
+     fun setMaxZoom(value: Double?) {
+        maxZoom = value
     }
 
-    fun setMinZoom(value: Double) {}
+    fun setMinZoom(value: Double?) {
+        minZoom = value
+    }
 
     fun setLayerStyle(value: String?) {
         pendingStyle = value
@@ -160,6 +165,14 @@ class RnMapboxToolkitLineLayer(context: ThemedReactContext) : AbstractMapFeature
             Log.e(TAG, "JSON parse error for layer '$layerId': ${properties.error}")
             return
         }
+
+        style.getLayer(layerId).let { layer ->
+            Log.d(TAG, "minZoom: $minZoom")
+            Log.d(TAG, "maxZoom: $maxZoom")
+            minZoom?.let { layer?.minZoom(it) }
+            maxZoom?.let { layer?.maxZoom(it) }
+        }
+
 
         val result = style.setStyleLayerProperties(layerId, properties.value!!)
         if (result.isValue) {
