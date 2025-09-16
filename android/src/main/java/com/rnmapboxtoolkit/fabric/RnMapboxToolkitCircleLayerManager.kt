@@ -6,6 +6,7 @@ import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.ViewManagerDelegate
 import com.facebook.react.viewmanagers.RnMapboxToolkitCircleLayerManagerDelegate
 import com.facebook.react.viewmanagers.RnMapboxToolkitCircleLayerManagerInterface
+import com.rnmaps.fabric.event.OnLayerStyleErrorEvent
 
 @ReactModule(name = RnMapboxToolkitCircleLayerManager.NAME)
 class RnMapboxToolkitCircleLayerManager :
@@ -25,6 +26,12 @@ class RnMapboxToolkitCircleLayerManager :
 
     public override fun createViewInstance(context: ThemedReactContext): RnMapboxToolkitCircleLayer {
         return RnMapboxToolkitCircleLayer(context)
+    }
+
+    override fun getExportedCustomDirectEventTypeConstants(): Map<String?, Any?>? {
+        return mapOf(
+            OnLayerStyleErrorEvent.Companion.EVENT_NAME to mapOf("registrationName" to OnLayerStyleErrorEvent.Companion.EVENT_NAME),
+        )
     }
 
     override fun setLayerID(

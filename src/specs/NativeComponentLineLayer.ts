@@ -4,7 +4,14 @@ import {
   type ViewProps,
 } from 'react-native';
 
-import type { Double } from 'react-native/Libraries/Types/CodegenTypesNamespace';
+import type {
+  Double,
+  DirectEventHandler,
+} from 'react-native/Libraries/Types/CodegenTypesNamespace';
+
+type OnLayerStyleErrorEventHandler = DirectEventHandler<
+  Readonly<{ properties: { message: string } }>
+>;
 
 interface NativeComponentsLineLayerProps extends ViewProps {
   layerID: string;
@@ -15,6 +22,8 @@ interface NativeComponentsLineLayerProps extends ViewProps {
    * Omit type is refused by codegen so use other name only from ts -> kt
    */
   layerStyle?: string;
+
+  onLayerStyleError?: OnLayerStyleErrorEventHandler;
 }
 
 export default codegenNativeComponent<NativeComponentsLineLayerProps>(

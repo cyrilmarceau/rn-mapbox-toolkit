@@ -1,3 +1,4 @@
+import type { NativeSyntheticEvent } from 'react-native';
 export type LatLng = {
   latitude: number;
   longitude: number;
@@ -24,3 +25,7 @@ const PositionToGravity = {
 
 export type PositionToGravity =
   (typeof PositionToGravity)[keyof typeof PositionToGravity];
+
+export type OnLayerStyleError = NativeSyntheticEvent<{
+  properties: { message: string };
+}>;

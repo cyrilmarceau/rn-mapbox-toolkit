@@ -1,3 +1,5 @@
+import type { OnLayerStyleError } from '../../common/shared.types';
+
 export type CircleLayerProps = {
   /**
    * the ID of the layer
@@ -82,6 +84,19 @@ export type CircleLayerProps = {
      */
     'circle-sort-key'?: number;
   };
+
+  /**
+   * Event triggered when adding or updating a layer style *properties* fails.
+   *
+   * Note:
+   * - If a style properties is add and fail but not typed in definitions files, this event will be trigger
+   * - Currently, detailed error information may be limited.
+   * @example 
+   * 'Cannot set layer property: circle-radiuss error: circle layer doesn\'t support this property: circle-radiuss' => 'circle-radiuss': 5,
+   * 'Cannot set layer property: circle-color error: value must be a valid color' => 'circle-color': '#fefe',
+   
+   */
+  onLayerStyleError?: (e: OnLayerStyleError) => void;
 };
 
 /**

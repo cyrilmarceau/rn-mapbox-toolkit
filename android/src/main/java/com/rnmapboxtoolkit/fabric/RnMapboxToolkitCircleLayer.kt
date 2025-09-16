@@ -2,13 +2,17 @@ package com.rnmapboxtoolkit.fabric
 
 import android.annotation.SuppressLint
 import android.util.Log
+import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.ReactContext
 import com.facebook.react.uimanager.ThemedReactContext
+import com.facebook.react.uimanager.UIManagerHelper
 import com.mapbox.bindgen.Value
 import com.mapbox.maps.MapboxStyleManager
 import com.mapbox.maps.coroutine.awaitStyle
 import com.mapbox.maps.extension.style.layers.addLayer
 import com.mapbox.maps.extension.style.layers.generated.CircleLayer
 import com.mapbox.maps.extension.style.layers.getLayer
+import com.rnmaps.fabric.event.OnLayerStyleErrorEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -175,7 +179,19 @@ class RnMapboxToolkitCircleLayer(context: ThemedReactContext) : AbstractMapFeatu
         if (result.isValue) {
             Log.i(TAG, " Style successfully applied to layer '$layerId'")
         } else {
+            val reactContext = context as ReactContext
+            val surfaceId = UIManagerHelper.getSurfaceId(reactContext)
+            val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(reactContext, id)
             Log.e(TAG, "Error applying style to layer '$layerId': ${result.error}")
+
+            val payload = Arguments.createMap().apply {
+                putString("message", result.error)
+            }
+            val properties = Arguments.createMap().apply {
+                putMap("properties", payload)
+            }
+            val event = OnLayerStyleErrorEvent(surfaceId, id, properties)
+            eventDispatcher?.dispatchEvent(event)
         }
     }
 

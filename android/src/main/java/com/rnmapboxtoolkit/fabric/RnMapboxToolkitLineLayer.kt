@@ -3,13 +3,17 @@ package com.rnmapboxtoolkit.fabric
 
 import android.annotation.SuppressLint
 import android.util.Log
+import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.ReactContext
 import com.facebook.react.uimanager.ThemedReactContext
+import com.facebook.react.uimanager.UIManagerHelper
 import com.mapbox.bindgen.Value
 import com.mapbox.maps.MapboxStyleManager
 import com.mapbox.maps.coroutine.awaitStyle
 import com.mapbox.maps.extension.style.layers.addLayer
 import com.mapbox.maps.extension.style.layers.generated.LineLayer
 import com.mapbox.maps.extension.style.layers.getLayer
+import com.rnmaps.fabric.event.OnLayerStyleErrorEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -165,20 +169,29 @@ class RnMapboxToolkitLineLayer(context: ThemedReactContext) : AbstractMapFeature
             Log.e(TAG, "JSON parse error for layer '$layerId': ${properties.error}")
             return
         }
-
         style.getLayer(layerId).let { layer ->
             Log.d(TAG, "minZoom: $minZoom")
             Log.d(TAG, "maxZoom: $maxZoom")
             minZoom?.let { layer?.minZoom(it) }
             maxZoom?.let { layer?.maxZoom(it) }
         }
-
-
         val result = style.setStyleLayerProperties(layerId, properties.value!!)
         if (result.isValue) {
             Log.i(TAG, " Style successfully applied to layer '$layerId'")
         } else {
-            Log.e(TAG, "Error applying style to layer '$layerId': ${result.error}")
+            val reactContext = context as ReactContext
+            val surfaceId = UIManagerHelper.getSurfaceId(reactContext)
+            val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(reactContext, id)
+            Log.e(RnMapboxToolkitCircleLayer.Companion.TAG, "Error applying style to layer '$layerId': ${result.error}")
+
+            val payload = Arguments.createMap().apply {
+                putString("message", result.error)
+            }
+            val properties = Arguments.createMap().apply {
+                putMap("properties", payload)
+            }
+            val event = OnLayerStyleErrorEvent(surfaceId, id, properties)
+            eventDispatcher?.dispatchEvent(event)
         }
     }
 

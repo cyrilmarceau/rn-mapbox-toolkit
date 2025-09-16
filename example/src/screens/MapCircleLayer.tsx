@@ -56,18 +56,23 @@ export default function MapCircleLayer() {
         style={style.mapContainer}
         styleUrl="dark-v11"
         showScaleBar={true}
+        onMapLoadingError={(e) =>
+          console.log('trigger', e?.nativeEvent.properties)
+        }
       >
         <Camera ref={cameraRef} />
         <ShapeSource shape={shape} sourceID="source-paris">
           <CircleLayer
             maxZoom={10}
-            // minZoom={20}
             layerID="test-1"
             sourceID="source-paris"
             layerStyle={{
               'circle-color': '#fefefe',
               'circle-radius': 5,
             }}
+            onLayerStyleError={(e) =>
+              console.log('onLayerStyleError', e.nativeEvent.properties)
+            }
           />
         </ShapeSource>
       </MapView>
