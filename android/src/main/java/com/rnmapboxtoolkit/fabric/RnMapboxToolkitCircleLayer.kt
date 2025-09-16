@@ -1,21 +1,13 @@
 package com.rnmapboxtoolkit.fabric
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.util.Log
-import androidx.core.view.get
 import com.facebook.react.uimanager.ThemedReactContext
 import com.mapbox.bindgen.Value
-import com.mapbox.geojson.FeatureCollection
 import com.mapbox.maps.MapboxStyleManager
-import com.mapbox.maps.coroutine.awaitLoadStyle
 import com.mapbox.maps.coroutine.awaitStyle
 import com.mapbox.maps.extension.style.layers.addLayer
 import com.mapbox.maps.extension.style.layers.generated.CircleLayer
-import com.mapbox.maps.extension.style.layers.generated.LineLayer
-import com.mapbox.maps.extension.style.layers.getLayer
-import com.mapbox.maps.extension.style.sources.addSource
-import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -74,10 +66,12 @@ class RnMapboxToolkitCircleLayer(context: ThemedReactContext) : AbstractMapFeatu
                 Log.e(TAG, "LayerID is null, cannot create layer")
                 return
             }
+
             currentSourceID == null -> {
                 Log.e(TAG, "SourceID is null, cannot create layer")
                 return
             }
+
             style.styleLayerExists(currentLayerID) -> {
                 Log.i(TAG, "Layer '$currentLayerID' already exists, skipping creation")
                 return
@@ -106,6 +100,7 @@ class RnMapboxToolkitCircleLayer(context: ThemedReactContext) : AbstractMapFeatu
     fun setMaxZoom(value: Double) {
 
     }
+
     fun setMinZoom(value: Double) {}
 
     fun setLayerStyle(value: String?) {
@@ -137,14 +132,18 @@ class RnMapboxToolkitCircleLayer(context: ThemedReactContext) : AbstractMapFeatu
                 Log.w(TAG, "Style JSON is null, ignoring")
                 return
             }
+
             currentLayerID == null -> {
                 Log.w(TAG, "LayerID is null, cannot apply style")
                 return
             }
+
             !style.styleLayerExists(currentLayerID) -> {
-                Log.i(TAG, "" +
-                    "Layer '$currentLayerID' doesn't exist yet >>> " +
-                    "style will be applied when layer is added")
+                Log.i(
+                    TAG, "" +
+                        "Layer '$currentLayerID' doesn't exist yet >>> " +
+                        "style will be applied when layer is added"
+                )
                 return
             }
         }
@@ -168,8 +167,6 @@ class RnMapboxToolkitCircleLayer(context: ThemedReactContext) : AbstractMapFeatu
             Log.e(TAG, "Error applying style to layer '$layerId': ${result.error}")
         }
     }
-
-
 
 
 }

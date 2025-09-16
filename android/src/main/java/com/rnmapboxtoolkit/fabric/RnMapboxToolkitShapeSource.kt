@@ -1,16 +1,10 @@
 package com.rnmapboxtoolkit.fabric
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.util.Log
-import android.view.View
 import com.facebook.react.uimanager.ThemedReactContext
 import com.mapbox.geojson.FeatureCollection
-import com.mapbox.maps.coroutine.awaitLoadStyle
 import com.mapbox.maps.coroutine.awaitStyle
-import com.mapbox.maps.extension.style.layers.addLayer
-import com.mapbox.maps.extension.style.layers.generated.CircleLayer
-import com.mapbox.maps.extension.style.layers.generated.LineLayer
 import com.mapbox.maps.extension.style.sources.addSource
 import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
 import kotlinx.coroutines.CoroutineScope
@@ -64,18 +58,28 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
     private fun updateSourceAndLayers() {
         withMapView { mapView ->
             scope.launch {
-                mapView.getMapboxMap()?.awaitStyle()?.let { style ->
-                    childLayers.forEach { it.removeFromMap(mapView, RemovalReason.ON_DESTROY) }
-                    style.removeStyleSource(sourceID)
+                try {
+                    mapView.getMapboxMap()?.awaitStyle()?.let { style ->
+                        when {
+                            style.styleSourceExists(sourceID) -> {
+                                Log.i(TAG, "Layer '$sourceID' already exists, skipping creation")
+                                return@launch
+                            }
+                        }
+                        childLayers.forEach { it.removeFromMap(mapView, RemovalReason.ON_DESTROY) }
+                        style.removeStyleSource(sourceID)
 
-                    shape?.let { shapeData ->
-                        val source = GeoJsonSource.Builder(sourceID)
-                            .featureCollection(FeatureCollection.fromJson(shapeData))
-                            .build()
-                        style.addSource(source)
+                        shape?.let { shapeData ->
+                            val source = GeoJsonSource.Builder(sourceID)
+                                .featureCollection(FeatureCollection.fromJson(shapeData))
+                                .build()
+                            style.addSource(source)
+                        }
+
+                        childLayers.forEach { it.addToMap(mapView) }
                     }
-
-                    childLayers.forEach { it.addToMap(mapView) }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to add source to map", e)
                 }
             }
         }

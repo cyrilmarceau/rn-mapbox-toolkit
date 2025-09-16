@@ -1,14 +1,13 @@
+import type { FeatureCollection, Geometry } from 'geojson';
+import React from 'react';
 import { Button, StyleSheet } from 'react-native';
 import {
   Camera,
   CircleLayer,
-  LineLayer,
   MapView,
   ShapeSource,
   type CameraRef,
 } from 'rn-mapbox-toolkit';
-import type { FeatureCollection, Geometry } from 'geojson';
-import React from 'react';
 
 const shape: FeatureCollection<Geometry> = {
   type: 'FeatureCollection',
@@ -32,7 +31,7 @@ const shape: FeatureCollection<Geometry> = {
   ],
 };
 
-export default function MapLineString() {
+export default function MapCircleLayer() {
   const cameraRef = React.useRef<CameraRef | null>(null);
 
   const handleFlyTo = async () => {
@@ -65,15 +64,7 @@ export default function MapLineString() {
             sourceID="source-paris"
             layerStyle={{
               'circle-color': '#fefefe',
-              'circle-radius': 1,
-            }}
-          />
-          <LineLayer
-            layerID="test-2"
-            sourceID="source-paris"
-            layerStyle={{
-              'line-color': '#3a27caff',
-              'line-width': 3.0,
+              'circle-radius': 5,
             }}
           />
         </ShapeSource>

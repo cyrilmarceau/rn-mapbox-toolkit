@@ -57,7 +57,11 @@ const SCREENS = [
     route: 'MapCamera',
   },
   {
-    label: 'MapLineString',
-    route: 'MapLineString',
+    label: 'MapLineLayer',
+    route: 'MapLineLayer',
+  },
+  {
+    label: 'MapCircleLayer',
+    route: 'MapCircleLayer',
   },
 ];
