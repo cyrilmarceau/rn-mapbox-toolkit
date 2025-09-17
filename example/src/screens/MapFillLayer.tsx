@@ -1,4 +1,4 @@
-import type { FeatureCollection, Geometry } from 'geojson';
+import type { Feature, FeatureCollection, Geometry } from 'geojson';
 import React from 'react';
 import { Button, StyleSheet } from 'react-native';
 import {
@@ -9,25 +9,20 @@ import {
   type CameraRef,
 } from 'rn-mapbox-toolkit';
 
-const shape: FeatureCollection<Geometry> = {
-  type: 'FeatureCollection',
-  features: [
-    {
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [2.2945, 48.8584],
-            [2.3499, 48.853],
-            [2.3364, 48.8606],
-            [2.2945, 48.8584],
-          ],
-        ],
-      },
-    },
-  ],
+const shape: FeatureCollection<Geometry> | Feature<Geometry> = {
+  type: 'Feature',
+  properties: {},
+  geometry: {
+    type: 'Polygon',
+    coordinates: [
+      [
+        [2.2945, 48.8584],
+        [2.3499, 48.853],
+        [2.3364, 48.8606],
+        [2.2945, 48.8584],
+      ],
+    ],
+  },
 };
 
 export default function MapFillLayer() {

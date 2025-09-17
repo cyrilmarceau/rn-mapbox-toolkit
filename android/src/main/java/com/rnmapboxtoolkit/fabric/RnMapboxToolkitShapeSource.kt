@@ -3,6 +3,7 @@ package com.rnmapboxtoolkit.fabric
 import android.annotation.SuppressLint
 import android.util.Log
 import com.facebook.react.uimanager.ThemedReactContext
+import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
 import com.mapbox.maps.coroutine.awaitStyle
 import com.mapbox.maps.extension.style.sources.addSource
@@ -11,6 +12,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.json.JSONException
+import org.json.JSONObject
 
 
 @SuppressLint("ViewConstructor")
@@ -70,12 +73,25 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
                         style.removeStyleSource(sourceID)
 
                         shape?.let { shapeData ->
-                            val source = GeoJsonSource.Builder(sourceID)
-                                .featureCollection(FeatureCollection.fromJson(shapeData))
-                                .build()
-                            style.addSource(source)
-                        }
+                            try {
+                                val jsonObject = JSONObject(shapeData)
 
+                                Log.d(TAG, "jsonObject $jsonObject")
+
+                                val type = jsonObject.getString("type")
+                                val sourceBuilder = when(type) {
+                                    "Feature" -> GeoJsonSource.Builder(sourceID)
+                                        .feature(Feature.fromJson(shapeData))
+                                    "FeatureCollection" -> GeoJsonSource.Builder(sourceID)
+                                        .featureCollection(FeatureCollection.fromJson(shapeData))
+                                    else -> return@let
+                                }
+
+                                style.addSource(sourceBuilder.build())
+                            } catch (e: JSONException) {
+                                Log.e(TAG, "Invalid JSON format", e)
+                            }
+                        }
                         childLayers.forEach { it.addToMap(mapView) }
                     }
                 } catch (e: Exception) {
