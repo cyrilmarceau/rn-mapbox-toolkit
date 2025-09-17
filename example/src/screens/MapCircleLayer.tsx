@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import type { FeatureCollection, Geometry } from 'geojson';
 import React from 'react';
 import { Button, StyleSheet } from 'react-native';
@@ -63,12 +64,12 @@ export default function MapCircleLayer() {
         <Camera ref={cameraRef} />
         <ShapeSource shape={shape} sourceID="source-paris">
           <CircleLayer
-            maxZoom={10}
+            // maxZoom={10}
             layerID="test-1"
             sourceID="source-paris"
             layerStyle={{
               'circle-color': '#fefefe',
-              'circle-radius': 5,
+              'circle-radius': ['step', ['zoom'], 2, 5, 5, 10, 10],
             }}
             onLayerStyleError={(e) =>
               console.log('onLayerStyleError', e.nativeEvent.properties)

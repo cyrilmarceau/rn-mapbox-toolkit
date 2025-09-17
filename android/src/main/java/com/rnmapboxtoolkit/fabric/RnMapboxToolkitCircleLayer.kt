@@ -96,7 +96,7 @@ class RnMapboxToolkitCircleLayer(context: ThemedReactContext) : AbstractMapFeatu
     }
 
     fun setSourceID(value: String?) {
-        this.sourceID = value
+        sourceID = value
     }
 
     fun setLayerID(value: String?) {

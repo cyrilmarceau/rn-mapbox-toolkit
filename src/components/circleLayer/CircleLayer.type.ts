@@ -1,4 +1,4 @@
-import type { OnLayerStyleError } from '../../common/shared.types';
+import type { OnLayerStyleError, Value } from '../../common/shared.types';
 
 export type CircleLayerProps = {
   /**
@@ -20,49 +20,64 @@ export type CircleLayerProps = {
      * Supports Mapbox expressions.
      * @default 5
      */
-    'circle-radius'?: number;
+    'circle-radius'?: Value<number>;
 
     /**
      * Fill color of the circle.
      * Supports Mapbox expressions.
      * @default '#000000'
      */
-    'circle-color'?: string;
+    'circle-color'?: Value<string>;
+
+    /**
+     * Controls the intensity of light emitted on the source features.
+     */
+    'circle-emissive-strength'?: Value<string>;
 
     /**
      * Opacity of the circle.
      * Supports Mapbox expressions.
      * @default 1
      */
-    'circle-opacity'?: number;
+    'circle-opacity'?: Value<number>;
 
+    /**
+     * Orientation of circle when map is pitched.
+     * @default viewport
+     */
+    'circle-pitch-alignment'?: Value<'map' | 'viewport'>;
+
+    /**
+     * Controls the scaling behavior of the circle when the map is pitched.
+     */
+    'circle-pitch-scale'?: Value<'map' | 'viewport'>;
     /**
      * Width of the circle's stroke.
      * Supports Mapbox expressions.
      * @default 0
      */
-    'circle-stroke-width'?: number;
+    'circle-stroke-width'?: Value<number>;
 
     /**
      * Color of the circle's stroke.
      * Supports Mapbox expressions.
      * @default '#000000'
      */
-    'circle-stroke-color'?: string;
+    'circle-stroke-color'?: Value<string>;
 
     /**
      * Opacity of the circle's stroke.
      * Supports Mapbox expressions.
      * @default 1
      */
-    'circle-stroke-opacity'?: number;
+    'circle-stroke-opacity'?: Value<number>;
 
     /**
      * Blur distance applied to the circle.
      * Supports Mapbox expressions.
      * @default 0
      */
-    'circle-blur'?: number;
+    'circle-blur'?: Value<number>;
 
     /**
      * Displacement of the circle relative to its original position.
@@ -70,10 +85,10 @@ export type CircleLayerProps = {
      * Supports Mapbox expressions.
      * @default [0, 0]
      */
-    'circle-translate'?: [number, number];
+    'circle-translate'?: Value<[number, number]>;
 
     /**
-     * Anchor point for the circle's translation.
+     * Controls the frame of reference for circle-translate.
      * @default 'center'
      */
     'circle-translate-anchor'?: 'map' | 'viewport';
@@ -82,7 +97,9 @@ export type CircleLayerProps = {
      * Rendering order for overlapping circles.
      * Supports Mapbox expressions.
      */
-    'circle-sort-key'?: number;
+    'circle-sort-key'?: Value<number>;
+
+    'visibility'?: Value<'visible' | 'none'>;
   };
 
   /**
