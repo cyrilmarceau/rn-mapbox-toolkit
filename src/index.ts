@@ -3,6 +3,7 @@ import Camera, { type CameraRef } from './components/camera/Camera';
 import ShapeSource from './components/shapeSource/ShapeSource';
 import LineLayer from './components/lineLayer/LineLayer';
 import CircleLayer from './components/circleLayer/CircleLayer';
+import FillLayer from './components/fillLayer/FillLayer';
 export {
   MapView,
   type MapViewRef,
@@ -11,4 +12,5 @@ export {
   ShapeSource,
   LineLayer,
   CircleLayer,
+  FillLayer,
 };

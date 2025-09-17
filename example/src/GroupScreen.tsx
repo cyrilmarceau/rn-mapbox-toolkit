@@ -64,4 +64,8 @@ const SCREENS = [
     label: 'MapCircleLayer',
     route: 'MapCircleLayer',
   },
+  {
+    label: 'MapFillLayer',
+    route: 'MapFillLayer',
+  },
 ];
