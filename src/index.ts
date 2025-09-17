@@ -1,3 +1,16 @@
 import MapView, { type MapViewRef } from './components/mapview/Mapview';
 import Camera, { type CameraRef } from './components/camera/Camera';
-export { MapView, type MapViewRef, Camera, type CameraRef };
+import ShapeSource from './components/shapeSource/ShapeSource';
+import LineLayer from './components/lineLayer/LineLayer';
+import CircleLayer from './components/circleLayer/CircleLayer';
+import FillLayer from './components/fillLayer/FillLayer';
+export {
+  MapView,
+  type MapViewRef,
+  Camera,
+  type CameraRef,
+  ShapeSource,
+  LineLayer,
+  CircleLayer,
+  FillLayer,
+};
