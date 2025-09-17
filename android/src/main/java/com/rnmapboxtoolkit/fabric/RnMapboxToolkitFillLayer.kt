@@ -4,7 +4,10 @@ package com.rnmapboxtoolkit.fabric
 import android.annotation.SuppressLint
 import android.util.Log
 import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.Dynamic
 import com.facebook.react.bridge.ReactContext
+import com.facebook.react.bridge.ReadableArray
+import com.facebook.react.bridge.ReadableType
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.UIManagerHelper
 import com.mapbox.bindgen.Value
@@ -19,6 +22,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONObject
 
 
 @SuppressLint("ViewConstructor")
@@ -34,12 +39,12 @@ class RnMapboxToolkitFillLayer(context: ThemedReactContext) : AbstractMapFeature
 
     private var sourceID: String? = null
     private var layerID: String? = null
-    private var maxZoom: Double? = null;
-    private var minZoom: Double? = null;
+    private var maxZoom: Double? = null
+    private var minZoom: Double? = null
 
     /* RN can call setLayerStyle before layer is add to tree
     */
-    private var pendingStyle: String? = null
+    private var pendingProps: MutableMap<String, Any> = mutableMapOf()
 
 
     override fun addToMap(mapView: RnMapboxToolkitView) {
@@ -56,6 +61,53 @@ class RnMapboxToolkitFillLayer(context: ThemedReactContext) : AbstractMapFeature
         }
     }
 
+    fun setSourceID(value: String?) {
+        sourceID = value
+    }
+
+    fun setLayerID(value: String?) {
+        layerID = value
+    }
+
+    fun setMaxZoom(value: Double?) {
+        maxZoom = value
+    }
+
+    fun setMinZoom(value: Double?) {
+        minZoom = value
+    }
+
+    fun setLayerStyle(value: String?) {
+        Log.d(TAG, "Called")
+        value?.let { styleStr ->
+            try {
+                val json = JSONObject(styleStr)
+                json.keys().forEach { key ->
+                    pendingProps[key] = json.get(key)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Invalid layerStyle JSON", e)
+            }
+        }
+        Log.d(TAG, "pendingProps $pendingProps")
+    }
+
+    fun setFilter(value: Dynamic?) {
+        value?.let { filter ->
+            try {
+                val array = filter.asArray()
+                array?.let { it ->
+                    // TODO: How to simplify boilerplate with all layer and filter key mapping into single class
+                    pendingProps["filter"] = dynamicToList(it)
+                    Log.d(TAG, "setFilter() converted filter list: ${pendingProps["filter"]}")
+                }
+
+            } catch (e: Exception) {
+                Log.e(TAG, "Invalid layerStyle JSON", e)
+            }
+        }
+    }
+
     private suspend fun addLayerToMap(map: RnMapboxToolkitView) {
         val mapboxMap = map.getMapboxMap()
         if (mapboxMap == null) {
@@ -67,9 +119,6 @@ class RnMapboxToolkitFillLayer(context: ThemedReactContext) : AbstractMapFeature
         val currentLayerID = layerID
         val currentSourceID = sourceID
 
-        // Send warning to RN ? Event to MapView or parent shape ?
-        // Or keep log in package and check with adb ?
-        // Type already exist from bridge. Use case ??
         when {
             currentLayerID == null -> {
                 Log.e(TAG, "LayerID is null, cannot create layer")
@@ -87,103 +136,54 @@ class RnMapboxToolkitFillLayer(context: ThemedReactContext) : AbstractMapFeature
             }
         }
 
-        val layer = FillLayer(currentLayerID, currentSourceID).apply {
-        }
+        val layer = FillLayer(currentLayerID, currentSourceID)
 
         style.addLayer(layer)
 
         // If style is call before layer is add to map, apply style to layer
-        pendingStyle?.let { styleJson ->
-            applyStyleToLayer(style, currentLayerID, styleJson)
-        }
-    }
-
-    fun setSourceID(value: String?) {
-        this.sourceID = value
-    }
-
-    fun setLayerID(value: String?) {
-        value?.let { it -> this.layerID = it }
-    }
-
-     fun setMaxZoom(value: Double?) {
-        maxZoom = value
-    }
-
-    fun setMinZoom(value: Double?) {
-        minZoom = value
-    }
-
-    fun setLayerStyle(value: String?) {
-        pendingStyle = value
-
-        withMapView { map ->
-            scope.launch {
-                try {
-                    applyStyleIfLayerExists(map, value)
-                } catch (e: Exception) {
-                    Log.e(TAG, "Exception while setting layer style", e)
+        if (pendingProps.isNotEmpty()) {
+            val mergedJson = JSONObject()
+            for ((key, value) in pendingProps) {
+                if (value is List<*>) {
+                    mergedJson.put(key, JSONArray(value))
+                } else {
+                    mergedJson.put(key, value)
                 }
             }
+            Log.d(TAG, "Merged JSON: $mergedJson")
+            applyPropsToLayer(style, currentLayerID, mergedJson.toString())
         }
+
     }
 
-    private suspend fun applyStyleIfLayerExists(map: RnMapboxToolkitView, styleJson: String?) {
-        val mapboxMap = map.getMapboxMap()
-        if (mapboxMap == null) {
-            Log.w(TAG, "MapboxMap is null, cannot apply style")
-            return
-        }
-
-        val style = mapboxMap.awaitStyle()
-        val currentLayerID = layerID
-
-        when {
-            styleJson == null -> {
-                Log.w(TAG, "Style JSON is null, ignoring")
-                return
-            }
-
-            currentLayerID == null -> {
-                Log.w(TAG, "LayerID is null, cannot apply style")
-                return
-            }
-
-            !style.styleLayerExists(currentLayerID) -> {
-                Log.i(
-                    TAG, "" +
-                        "Layer '$currentLayerID' doesn't exist yet >>> " +
-                        "style will be applied when layer is added"
-                )
-                return
-            }
-        }
-
-        applyStyleToLayer(style, currentLayerID, styleJson)
-    }
-
-    private fun applyStyleToLayer(style: MapboxStyleManager, layerId: String, styleJson: String) {
+    private fun applyPropsToLayer(style: MapboxStyleManager, layerId: String, styleJson: String) {
         Log.d(TAG, "Applying style to layer '$layerId'")
+        Log.d(TAG, "Applying style to layer with json '$styleJson'")
 
         val properties = Value.fromJson(styleJson)
+        Log.d(TAG, "JSON parse result: ${properties.value}")
         if (!properties.isValue) {
             Log.e(TAG, "JSON parse error for layer '$layerId': ${properties.error}")
             return
         }
+
         style.getLayer(layerId).let { layer ->
-            Log.d(TAG, "minZoom: $minZoom")
-            Log.d(TAG, "maxZoom: $maxZoom")
             minZoom?.let { layer?.minZoom(it) }
             maxZoom?.let { layer?.maxZoom(it) }
         }
+
         val result = style.setStyleLayerProperties(layerId, properties.value!!)
+
         if (result.isValue) {
             Log.i(TAG, " Style successfully applied to layer '$layerId'")
         } else {
             val reactContext = context as ReactContext
             val surfaceId = UIManagerHelper.getSurfaceId(reactContext)
             val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(reactContext, id)
-            Log.e(RnMapboxToolkitCircleLayer.Companion.TAG, "Error applying style to layer '$layerId': ${result.error}")
+            Log.e(
+                RnMapboxToolkitCircleLayer.Companion.TAG,
+                "Error applying style to layer '$layerId': ${result.error}"
+            )
 
             val payload = Arguments.createMap().apply {
                 putString("message", result.error)
@@ -194,6 +194,45 @@ class RnMapboxToolkitFillLayer(context: ThemedReactContext) : AbstractMapFeature
             val event = OnLayerStyleErrorEvent(surfaceId, id, properties)
             eventDispatcher?.dispatchEvent(event)
         }
+    }
+
+    private fun dynamicToList(array: ReadableArray): List<Any> {
+        val list = mutableListOf<Any>()
+        for (i in 0 until array.size()) {
+            when (array.getType(i)) {
+                ReadableType.String -> array.getString(i)?.let { st -> list.add(st) }
+                ReadableType.Number -> array.getDouble(i).let { db -> list.add(db) }
+                ReadableType.Boolean -> array.getBoolean(i).let { bl -> list.add(bl) }
+                ReadableType.Array -> array.getArray(i)?.let { ar -> list.add(dynamicToList(ar)) }
+                else -> array.getString(i)?.let { et -> list.add(et) }
+            }
+        }
+        return list
+    }
+
+    private fun listToJSONArray(list: List<*>): JSONArray {
+        val array = JSONArray()
+        for (item in list) {
+            when (item) {
+                is String, is Number, is Boolean -> array.put(item)
+                is List<*> -> array.put(listToJSONArray(item))
+                is Map<*, *> -> array.put(mapToJSONObject(item))
+                else -> array.put(item.toString())
+            }
+        }
+        return array
+    }
+
+    private fun mapToJSONObject(map: Map<*, *>): JSONObject {
+        val json = JSONObject()
+        for ((key, value) in map) {
+            when (value) {
+                is List<*> -> json.put(key.toString(), listToJSONArray(value))
+                is Map<*, *> -> json.put(key.toString(), mapToJSONObject(value))
+                else -> json.put(key.toString(), value)
+            }
+        }
+        return json
     }
 
 

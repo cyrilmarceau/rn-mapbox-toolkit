@@ -138,7 +138,7 @@ type ExpressionName =
   // Heatmap
   | 'heatmap-density';
 
-type Expression = readonly [ExpressionName, ...any[]];
+export type Expression = readonly [ExpressionName, ...any[]];
 
 type InterpolationType =
   | readonly ['linear']

@@ -1,4 +1,8 @@
-import type { OnLayerStyleError, Value } from '../../common/shared.types';
+import type {
+  Expression,
+  OnLayerStyleError,
+  Value,
+} from '../../common/shared.types';
 
 export type FillLayerProps = {
   /**
@@ -22,6 +26,7 @@ export type FillLayerProps = {
    * @default undefined (no maximum)
    */
   maxZoom?: number;
+  filter?: Expression;
 
   layerStyle?: {
     /**

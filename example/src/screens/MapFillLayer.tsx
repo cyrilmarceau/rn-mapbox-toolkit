@@ -61,6 +61,8 @@ export default function MapFillLayer() {
           <FillLayer
             layerID="test-2"
             sourceID="source-paris"
+            onLayerStyleError={(e) => console.log(e.nativeEvent.properties)}
+            filter={['==', ['geometry-type'], 'Polygon']}
             layerStyle={{
               'fill-color': '#acacac',
               'fill-opacity': 0.5,

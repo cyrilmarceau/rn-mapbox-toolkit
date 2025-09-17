@@ -7,6 +7,8 @@ import type {
   Double,
   DirectEventHandler,
 } from 'react-native/Libraries/Types/CodegenTypesNamespace';
+import type { UnsafeMixed } from './codegenUtils';
+import type { Expression } from '../common/shared.types';
 
 type OnLayerStyleErrorEventHandler = DirectEventHandler<
   Readonly<{ properties: { message: string } }>
@@ -22,6 +24,7 @@ interface NativeComponentsFillLayerProps extends ViewProps {
    * Omit type is refused by codegen so use other name only from ts -> kt
    */
   layerStyle?: string;
+  filter?: UnsafeMixed<Expression>;
   onLayerStyleError?: OnLayerStyleErrorEventHandler;
 }
 

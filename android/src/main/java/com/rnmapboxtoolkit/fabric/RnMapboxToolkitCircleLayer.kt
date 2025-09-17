@@ -161,7 +161,7 @@ class RnMapboxToolkitCircleLayer(context: ThemedReactContext) : AbstractMapFeatu
 
     private fun applyPropsToLayer(style: MapboxStyleManager, layerId: String, styleJson: String) {
         Log.d(TAG, "Applying style to layer '$layerId'")
-
+        Log.d(TAG, "Applying style to layer with json '$styleJson'")
         val properties = Value.fromJson(styleJson)
         if (!properties.isValue) {
             Log.e(TAG, "JSON parse error for layer '$layerId': ${properties.error}")
