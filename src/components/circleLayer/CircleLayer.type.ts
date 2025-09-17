@@ -1,17 +1,29 @@
-import type { OnLayerStyleError, Value } from '../../common/shared.types';
+import type {
+  Expression,
+  OnLayerStyleError,
+  Value,
+} from '../../common/shared.types';
 
 export type CircleLayerProps = {
   /**
-   * the ID of the layer
+   * The unique identifier for the layer.
    */
   layerID: string;
   /**
-   * Data source for the layer.
+   * Data source identifier for the layer.
    */
   sourceID: string;
 
+  /**
+   * Minimum zoom level at which the layer is visible.
+   * @default undefined (no minimum)
+   */
   minZoom?: number;
 
+  /**
+   * Maximum zoom level at which the layer is visible.
+   * @default undefined (no maximum)
+   */
   maxZoom?: number;
 
   layerStyle?: {
@@ -101,6 +113,13 @@ export type CircleLayerProps = {
 
     'visibility'?: Value<'visible' | 'none'>;
   };
+
+  /**
+   * An expression specifying conditions on source features.
+   * Only features that match the filter are displayed.
+   * Zoom expressions in filters are only evaluated at integer zoom levels
+   */
+  filter?: Expression;
 
   /**
    * Event triggered when adding or updating a layer style *properties* fails.

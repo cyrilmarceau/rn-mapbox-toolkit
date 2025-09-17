@@ -1,5 +1,6 @@
 package com.rnmapboxtoolkit.fabric
 
+import com.facebook.react.bridge.Dynamic
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
@@ -79,6 +80,13 @@ class RnMapboxToolkitLineLayerManager :
         value: String?
     ) {
     view?.setLayerStyle(value)
+    }
+
+    override fun setFilter(
+        view: RnMapboxToolkitLineLayer?,
+        value: Dynamic?
+    ) {
+        view?.setFilter(value)
     }
 
     companion object {

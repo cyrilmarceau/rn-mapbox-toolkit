@@ -26,6 +26,12 @@ export type FillLayerProps = {
    * @default undefined (no maximum)
    */
   maxZoom?: number;
+
+  /**
+   * An expression specifying conditions on source features.
+   * Only features that match the filter are displayed.
+   * Zoom expressions in filters are only evaluated at integer zoom levels
+   */
   filter?: Expression;
 
   layerStyle?: {
