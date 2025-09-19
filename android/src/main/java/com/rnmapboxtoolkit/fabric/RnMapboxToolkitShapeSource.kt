@@ -24,8 +24,16 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
 
     private var sourceID: String = "default-source-id"
     private var shape: String? = null
+    private var cluster: Boolean = false
+    private var clusterRadius: Long = 50
+    private var clusterMaxZoom: Long = 14
+    private var clusterMinPoints: Long = 2
+    private var tolerance: Double = 0.375
+    private var buffer: Long = 128
+
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
+
     private val childLayers = mutableListOf<AbstractMapFeature>()
 
     override fun addToMap(mapView: RnMapboxToolkitView) {
@@ -87,11 +95,20 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
                                     else -> return@let
                                 }
 
-                                style.addSource(sourceBuilder.build())
+                                style.addSource(sourceBuilder
+                                    .cluster(cluster)
+                                    .buffer(buffer)
+                                    .tolerance(tolerance)
+                                    .clusterRadius(clusterRadius)
+                                    .clusterMaxZoom(clusterMaxZoom)
+                                    .clusterMinPoints(clusterMinPoints)
+                                    .build()
+                                )
                             } catch (e: JSONException) {
                                 Log.e(TAG, "Invalid JSON format", e)
                             }
                         }
+
                         childLayers.forEach { it.addToMap(mapView) }
                     }
                 } catch (e: Exception) {
@@ -101,14 +118,55 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
         }
     }
 
-    fun setShape(shape: String?) {
-        this.shape = shape
-        updateSourceAndLayers()
+    fun setShape(value: String?) {
+        if(shape != value) {
+            shape = value
+            updateSourceAndLayers()
+        }
+
     }
 
     fun setSourceID(value: String?) {
-        value?.let { sourceID = it }
-        updateSourceAndLayers()
+        value?.let {
+            if(sourceID != it) {
+                sourceID = it
+                updateSourceAndLayers()
+            }
+        }
+
+    }
+
+    fun setClusterMinPoints(value: Double) {
+        if(clusterMinPoints != value.toLong()) {
+            clusterMinPoints = value.toLong()
+        }
+    }
+
+    fun setClusterMaxZoom(value: Double) {
+        if(clusterMaxZoom != value.toLong()) {
+            clusterMaxZoom = value.toLong()
+        }
+    }
+
+    fun setClusterRadius(value: Double) {
+        if(clusterRadius != value.toLong()) {
+            clusterRadius = value.toLong()
+        }
+    }
+    fun setCluster(value: Boolean) {
+        if(cluster != value) {
+            cluster = value
+        }
+    }
+    fun setTolerance(value: Double) {
+        if(tolerance != value) {
+            tolerance = value
+        }
+    }
+    fun setBuffer(value: Double) {
+        if(buffer != value.toLong()) {
+            buffer = value.toLong()
+        }
     }
 }
 

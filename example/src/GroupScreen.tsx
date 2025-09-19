@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SCREENS } from './routes';
 
 const ScreenList = () => {
   const navigation = useNavigation();
@@ -9,11 +10,14 @@ const ScreenList = () => {
   };
   return (
     <>
-      {SCREENS.map((sc, index) => (
-        <View key={`${sc.label}-${index}`} style={styles.exampleListItemBorder}>
-          <TouchableOpacity onPress={() => onPress(sc.label)}>
+      {SCREENS.map((screen, index) => (
+        <View
+          key={`${screen.label}-${index}`}
+          style={styles.exampleListItemBorder}
+        >
+          <TouchableOpacity onPress={() => onPress(screen.label)}>
             <View style={styles.exampleListItem}>
-              <Text style={styles.exampleListLabel}>{sc.label}</Text>
+              <Text style={styles.exampleListLabel}>{screen.label}</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -42,30 +46,3 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 });
-
-const SCREENS = [
-  {
-    label: 'MapSettings',
-    route: 'MapSettings',
-  },
-  {
-    label: 'MapEventsListener',
-    route: 'MapEventsListener',
-  },
-  {
-    label: 'MapCamera',
-    route: 'MapCamera',
-  },
-  {
-    label: 'MapLineLayer',
-    route: 'MapLineLayer',
-  },
-  {
-    label: 'MapCircleLayer',
-    route: 'MapCircleLayer',
-  },
-  {
-    label: 'MapFillLayer',
-    route: 'MapFillLayer',
-  },
-];

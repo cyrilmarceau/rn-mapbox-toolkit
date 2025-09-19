@@ -58,6 +58,48 @@ class RnMapboxToolkitShapeSourceManager :
         view?.setSourceID(value)
     }
 
+    override fun setBuffer(
+        view: RnMapboxToolkitShapeSource?,
+        value: Double
+    ) {
+        view?.setBuffer(value)
+    }
+
+    override fun setTolerance(
+        view: RnMapboxToolkitShapeSource?,
+        value: Double
+    ) {
+        view?.setTolerance(value)
+    }
+
+    override fun setCluster(
+        view: RnMapboxToolkitShapeSource?,
+        value: Boolean
+    ) {
+        view?.setCluster(value)
+    }
+
+    override fun setClusterRadius(
+        view: RnMapboxToolkitShapeSource?,
+        value: Double
+    ) {
+        view?.setClusterRadius(value)
+    }
+
+    override fun setClusterMaxZoom(
+        view: RnMapboxToolkitShapeSource?,
+        value: Double
+    ) {
+        view?.setClusterMaxZoom(value)
+    }
+
+    override fun setClusterMinPoints(
+        view: RnMapboxToolkitShapeSource?,
+        value: Double
+    ) {
+        view?.setClusterMinPoints(value)
+    }
+
     companion object {
         const val NAME = "RnMapboxToolkitShapeSource"
     }
