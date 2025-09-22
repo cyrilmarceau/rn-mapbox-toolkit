@@ -7,12 +7,3 @@ export type UnsafeMixed<T> = T;
 // Fabric doesn't support optional props, so we need to use UnsafeMixed
 // https://github.com/rnmapbox/maps/pull/3082#discussion_r1339858750
 export type OptionalProp<T> = UnsafeMixed<T>;
-
-export type GeoJSONFeature = {
-  type: 'Feature';
-  // geometry: {
-  //   type: string;
-  //   coordinates: ReadonlyArray<any>; // simplify here (could be nested arrays)
-  // };
-  // properties?: { [key: string]: string | Double | boolean | null };
-};

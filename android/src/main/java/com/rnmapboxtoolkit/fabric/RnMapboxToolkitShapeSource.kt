@@ -9,9 +9,11 @@ import com.facebook.react.uimanager.UIManagerHelper
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.Point
-import com.mapbox.maps.QueryRenderedFeaturesCallback
+import com.mapbox.maps.QueriedRenderedFeature
 import com.mapbox.maps.RenderedQueryGeometry
 import com.mapbox.maps.RenderedQueryOptions
+import com.mapbox.maps.ScreenCoordinate
+import com.mapbox.maps.Style
 import com.mapbox.maps.coroutine.awaitStyle
 import com.mapbox.maps.extension.style.sources.addSource
 import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
@@ -55,135 +57,175 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
         Log.d(TAG, "removeFromMap")
         withMapView { map ->
             scope.launch {
-                map.getMapboxMap()?.style?.let { style ->
-                    childLayers.forEach { it.removeFromMap(map, reason) }
-                    style.removeStyleSource(sourceID)
-                }
+                removeSourceFromMap(map, reason)
             }
         }
         return super.removeFromMap(mapView, reason)
     }
 
+
+    private fun removeSourceFromMap(map: RnMapboxToolkitView, reason: RemovalReason) {
+        map.getMapboxMap()?.style?.let { style ->
+            removeChildLayers(map, reason)
+            removeSourceFromStyle(style)
+        }
+    }
+
+    private fun removeChildLayers(map: RnMapboxToolkitView, reason: RemovalReason) {
+        childLayers.forEach { it.removeFromMap(map, reason) }
+    }
+
+    private fun removeSourceFromStyle(style: Style) {
+        style.removeStyleSource(sourceID)
+    }
+
     override fun addChild(child: AbstractMapFeature) {
-        Log.d(TAG, "addChild()")
         childLayers.add(child)
+
         updateSourceAndLayers()
     }
 
     override fun removeChild(child: AbstractMapFeature) {
         childLayers.remove(child)
+
         updateSourceAndLayers()
     }
 
     override fun onMapClick(point: Point): Boolean {
         Log.d(TAG, "Called")
-        withMapView { mapView ->
-            val pixel = mapView.getMapboxMap()?.pixelForCoordinate(point)
-            pixel?.let { it ->
-
-                val map = mapView.getMapboxMap()
-                map?.queryRenderedFeatures(
-                    RenderedQueryGeometry(it),
-                    RenderedQueryOptions(
-                        getSourceLayerIDS(),
-                        null
-                    ),
-
-                    )
-                { features ->
-                    if (features.isValue) {
-                        val reactContext = context as ReactContext
-                        val surfaceId = UIManagerHelper.getSurfaceId(reactContext)
-                        val eventDispatcher =
-                            UIManagerHelper.getEventDispatcherForReactTag(reactContext, id)
-
-                        val fts = Arguments.createArray()
-
-                        features.value?.let { features ->
-                            if (features.isNotEmpty()) {
-                                features.forEach { features ->
-                                    fts.pushMap(features.queriedFeature.feature.toReadableMap())
-                                }
-                            }
-                        }
-
-                        val payload = Arguments.createMap().apply {
-                            putArray("features", fts)
-                        }
-
-                        Log.d(TAG, "features ${payload}")
-                        val event = OnShapePressEvent(surfaceId, id, payload)
-                        eventDispatcher?.dispatchEvent(event)
-
-                    } else {
-                        Log.d(TAG, "features error ${features.error}")
-                    }
-
-                }
-            }
-
-        }
+        withMapView { mapView -> handleMapClick(mapView, point) }
 
         return true
     }
 
-    private fun buildEvent(result: QueryRenderedFeaturesCallback) {
+    private fun handleMapClick(mapView: RnMapboxToolkitView, point: Point) {
+        val pixel = convertPointToPixel(mapView, point)
+        pixel?.let { it -> queryFeaturesAtPixel(mapView, it) }
+    }
 
+    private fun convertPointToPixel(mapView: RnMapboxToolkitView, point: Point): ScreenCoordinate? {
+        return mapView.getMapboxMap()?.pixelForCoordinate(point)
+    }
+
+    private fun queryFeaturesAtPixel(mapView: RnMapboxToolkitView, pixel: ScreenCoordinate) {
+        val map = mapView.getMapboxMap()
+
+        map?.queryRenderedFeatures(
+            RenderedQueryGeometry(pixel),
+            RenderedQueryOptions(getSourceLayerIDS(), null)
+        ) { features ->
+            if (features.isValue) {
+                handleQuerySuccess(features.value)
+            } else {
+                Log.d(TAG, "features error ${features.error}")
+            }
+        }
+    }
+
+    private fun handleQuerySuccess(features: List<QueriedRenderedFeature>?) {
+        val reactContext = context as ReactContext
+        val surfaceId = UIManagerHelper.getSurfaceId(reactContext)
+        val eventDispatcher =
+            UIManagerHelper.getEventDispatcherForReactTag(reactContext, id)
+
+        val fts = Arguments.createArray()
+
+        features?.let { features ->
+            if (features.isNotEmpty()) {
+                features.forEach { features ->
+                    fts.pushMap(features.queriedFeature.feature.toReadableMap())
+                }
+            }
+        }
+
+        val payload = Arguments.createMap().apply { putArray("features", fts) }
+
+        val event = OnShapePressEvent(surfaceId, id, payload)
+        eventDispatcher?.dispatchEvent(event)
     }
 
     private fun updateSourceAndLayers() {
         withMapView { mapView ->
             scope.launch {
                 try {
-                    mapView.getMapboxMap()?.awaitStyle()?.let { style ->
-                        when {
-                            style.styleSourceExists(sourceID) -> {
-                                Log.i(TAG, "Layer '$sourceID' already exists, skipping creation")
-                                return@launch
-                            }
-                        }
-                        childLayers.forEach { it.removeFromMap(mapView, RemovalReason.ON_DESTROY) }
-                        style.removeStyleSource(sourceID)
-
-                        shape?.let { shapeData ->
-                            try {
-                                val jsonObject = JSONObject(shapeData)
-
-                                Log.d(TAG, "jsonObject $jsonObject")
-
-                                val type = jsonObject.getString("type")
-                                val sourceBuilder = when (type) {
-                                    "Feature" -> GeoJsonSource.Builder(sourceID)
-                                        .feature(Feature.fromJson(shapeData))
-
-                                    "FeatureCollection" -> GeoJsonSource.Builder(sourceID)
-                                        .featureCollection(FeatureCollection.fromJson(shapeData))
-
-                                    else -> return@let
-                                }
-
-                                style.addSource(
-                                    sourceBuilder
-                                        .cluster(cluster)
-                                        .buffer(buffer)
-                                        .tolerance(tolerance)
-                                        .clusterRadius(clusterRadius)
-                                        .clusterMaxZoom(clusterMaxZoom)
-                                        .clusterMinPoints(clusterMinPoints)
-                                        .build()
-                                )
-                            } catch (e: JSONException) {
-                                Log.e(TAG, "Invalid JSON format", e)
-                            }
-                        }
-
-                        childLayers.forEach { it.addToMap(mapView) }
-                    }
+                    updateMapSource(mapView)
                 } catch (e: Exception) {
                     Log.e(TAG, "Failed to add source to map", e)
                 }
             }
         }
+    }
+
+    private suspend fun updateMapSource(mapView: RnMapboxToolkitView) {
+        val style = getMapStyle(mapView) ?: return
+
+        if (hasSourceExisting(style)) {
+            Log.i(TAG, "Layer '$sourceID' already exists, skipping creation")
+            return
+        }
+
+        removeExisting(mapView, style)
+        createSource(style)
+        addChildLayers(mapView)
+    }
+
+    private suspend fun getMapStyle(mapView: RnMapboxToolkitView): Style? {
+        return mapView.getMapboxMap()?.awaitStyle()
+    }
+
+    private fun hasSourceExisting(style: Style): Boolean {
+        return style.styleSourceExists(sourceID)
+    }
+
+    private fun removeExisting(mapView: RnMapboxToolkitView, style: Style) {
+        removeChildLayers(mapView, RemovalReason.ON_DESTROY)
+        removeSourceFromStyle(style)
+    }
+
+    private fun createSource(style: Style) {
+        shape?.let { shapeData ->
+            val sourceBuilder = createGeoJsonBuilder(shapeData)
+            sourceBuilder?.let { it ->
+                val source = buildSource(it, style)
+                addSourceToStyle(style, source)
+            }
+        }
+    }
+
+    private fun createGeoJsonBuilder(shapeData: String): GeoJsonSource.Builder? {
+        val jsonObject = JSONObject(shapeData)
+
+        val type = jsonObject.getString("type")
+        val sourceBuilder = when (type) {
+            "Feature" -> GeoJsonSource.Builder(sourceID)
+                .feature(Feature.fromJson(shapeData))
+
+            "FeatureCollection" -> GeoJsonSource.Builder(sourceID)
+                .featureCollection(FeatureCollection.fromJson(shapeData))
+
+            else -> return null
+        }
+
+        return sourceBuilder
+    }
+
+    private fun buildSource(sourceBuilder: GeoJsonSource.Builder, style: Style): GeoJsonSource {
+        return sourceBuilder
+            .cluster(cluster)
+            .buffer(buffer)
+            .tolerance(tolerance)
+            .clusterRadius(clusterRadius)
+            .clusterMaxZoom(clusterMaxZoom)
+            .clusterMinPoints(clusterMinPoints)
+            .build()
+    }
+
+    private fun addSourceToStyle(style: Style, source: GeoJsonSource) {
+        style.addSource(source)
+    }
+
+    private fun addChildLayers(mapView: RnMapboxToolkitView) {
+        childLayers.forEach { it.addToMap(mapView) }
     }
 
     fun setShape(value: String?) {
