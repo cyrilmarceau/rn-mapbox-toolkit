@@ -62,4 +62,8 @@ export type ShapeSourceProps = {
    * @default 2
    */
   clusterMinPoints?: number;
+
+  onPress?: (e: GeoJSON.Feature) => void;
 };
+
+export interface ShapeSourceRef {}

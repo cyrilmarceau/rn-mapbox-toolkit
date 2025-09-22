@@ -2043,7 +2043,12 @@ export default function MapCluster() {
         showScaleBar={true}
       >
         <Camera ref={cameraRef} />
-        <ShapeSource shape={shapes} sourceID="source-paris" cluster={true}>
+        <ShapeSource
+          shape={shapes}
+          sourceID="source-paris"
+          onPress={(feature) => console.log(feature)}
+          cluster={true}
+        >
           <CircleLayer
             layerID="points"
             sourceID="source-paris"
@@ -2071,7 +2076,7 @@ export default function MapCluster() {
           />
 
           <CircleLayer
-            layerID="points"
+            layerID="points-1"
             sourceID="source-paris"
             filter={['!', ['has', 'point_count']]}
             onLayerStyleError={(e) => console.log(e.nativeEvent.properties)}

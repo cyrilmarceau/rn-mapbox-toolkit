@@ -9,11 +9,17 @@ import com.facebook.react.bridge.ReadableType
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.UIManagerHelper
 import com.mapbox.bindgen.Value
+import com.mapbox.geojson.Point
 import com.mapbox.maps.MapboxStyleManager
+import com.mapbox.maps.RenderedQueryGeometry
+import com.mapbox.maps.RenderedQueryOptions
 import com.mapbox.maps.coroutine.awaitStyle
+import com.mapbox.maps.coroutine.queryRenderedFeatures
 import com.mapbox.maps.extension.style.layers.Layer
 import com.mapbox.maps.extension.style.layers.addLayer
 import com.mapbox.maps.extension.style.layers.getLayer
+import com.mapbox.maps.plugin.gestures.OnMapClickListener
+import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 import com.rnmaps.fabric.event.OnLayerStyleErrorEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +28,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 
-abstract class AbstractLayer<T : Layer>(context: ThemedReactContext): AbstractMapFeature(context) {
+abstract class AbstractLayer<T : Layer>(context: ThemedReactContext) : AbstractMapFeature(context) {
     companion object {
         const val TAG = "AbstractLayer"
     }
@@ -71,6 +77,35 @@ abstract class AbstractLayer<T : Layer>(context: ThemedReactContext): AbstractMa
         minZoom = value
     }
 
+    fun setLayerStyle(value: String?) {
+        Log.d(TAG, "Called")
+        value?.let { styleStr ->
+            try {
+                val json = JSONObject(styleStr)
+                json.keys().forEach { key ->
+                    pendingProps[key] = json.get(key)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Invalid layerStyle JSON", e)
+            }
+        }
+        Log.d(TAG, "pendingProps $pendingProps")
+    }
+
+    fun setFilter(value: Dynamic?) {
+        value?.let { filter ->
+            try {
+                val array = filter.asArray()
+                array?.let { it ->
+                    pendingProps["filter"] = dynamicToList(it)
+                    Log.d(TAG, "setFilter() converted filter list: ${pendingProps["filter"]}")
+                }
+
+            } catch (e: Exception) {
+                Log.e(TAG, "Invalid layerStyle JSON", e)
+            }
+        }
+    }
 
     private fun dynamicToList(array: ReadableArray): List<Any> {
         val list = mutableListOf<Any>()
@@ -111,36 +146,6 @@ abstract class AbstractLayer<T : Layer>(context: ThemedReactContext): AbstractMa
         return json
     }
 
-    fun setLayerStyle(value: String?) {
-        Log.d(TAG, "Called")
-        value?.let { styleStr ->
-            try {
-                val json = JSONObject(styleStr)
-                json.keys().forEach { key ->
-                    pendingProps[key] = json.get(key)
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Invalid layerStyle JSON", e)
-            }
-        }
-        Log.d(TAG, "pendingProps $pendingProps")
-    }
-
-    fun setFilter(value: Dynamic?) {
-        value?.let { filter ->
-            try {
-                val array = filter.asArray()
-                array?.let { it ->
-                    pendingProps["filter"] = dynamicToList(it)
-                    Log.d(TAG, "setFilter() converted filter list: ${pendingProps["filter"]}")
-                }
-
-            } catch (e: Exception) {
-                Log.e(TAG, "Invalid layerStyle JSON", e)
-            }
-        }
-    }
-
     private suspend fun addLayerToMap(map: RnMapboxToolkitView) {
         val mapboxMap = map.getMapboxMap()
         if (mapboxMap == null) {
@@ -170,6 +175,8 @@ abstract class AbstractLayer<T : Layer>(context: ThemedReactContext): AbstractMa
         }
 
         val layer = createLayer(currentLayerID, currentSourceID)
+
+        addLayerID(currentLayerID)
 
         style.addLayer(layer)
 
@@ -213,7 +220,7 @@ abstract class AbstractLayer<T : Layer>(context: ThemedReactContext): AbstractMa
                 "AbstractLayer",
                 "Error applying style to layer '$layerId': ${result.error}"
             )
-            result.error?.let { it -> dispatchStyleError(it)}
+            result.error?.let { it -> dispatchStyleError(it) }
 
         }
     }

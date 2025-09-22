@@ -2,12 +2,12 @@ package com.rnmapboxtoolkit.fabric
 
 import android.view.View
 import com.facebook.react.module.annotations.ReactModule
-import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.ViewGroupManager
 import com.facebook.react.uimanager.ViewManagerDelegate
 import com.facebook.react.viewmanagers.RnMapboxToolkitShapeSourceManagerDelegate
 import com.facebook.react.viewmanagers.RnMapboxToolkitShapeSourceManagerInterface
+import com.rnmaps.fabric.event.OnShapePressEvent
 
 @ReactModule(name = RnMapboxToolkitShapeSourceManager.NAME)
 class RnMapboxToolkitShapeSourceManager :
@@ -27,6 +27,12 @@ class RnMapboxToolkitShapeSourceManager :
 
     public override fun createViewInstance(context: ThemedReactContext): RnMapboxToolkitShapeSource {
         return RnMapboxToolkitShapeSource(context)
+    }
+
+    override fun getExportedCustomDirectEventTypeConstants(): Map<String?, Any?>? {
+        return mapOf(
+            OnShapePressEvent.Companion.EVENT_NAME to mapOf("registrationName" to OnShapePressEvent.Companion.EVENT_NAME)
+        )
     }
 
     override fun addView(parent: RnMapboxToolkitShapeSource, child: View, index: Int) {

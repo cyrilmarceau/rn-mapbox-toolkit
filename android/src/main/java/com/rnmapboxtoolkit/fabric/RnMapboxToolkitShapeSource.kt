@@ -2,12 +2,21 @@ package com.rnmapboxtoolkit.fabric
 
 import android.annotation.SuppressLint
 import android.util.Log
+import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.ReactContext
 import com.facebook.react.uimanager.ThemedReactContext
+import com.facebook.react.uimanager.UIManagerHelper
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
+import com.mapbox.geojson.Point
+import com.mapbox.maps.QueryRenderedFeaturesCallback
+import com.mapbox.maps.RenderedQueryGeometry
+import com.mapbox.maps.RenderedQueryOptions
 import com.mapbox.maps.coroutine.awaitStyle
 import com.mapbox.maps.extension.style.sources.addSource
 import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
+import com.rnmapboxtoolkit.extensions.toReadableMap
+import com.rnmaps.fabric.event.OnShapePressEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -66,6 +75,62 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
         updateSourceAndLayers()
     }
 
+    override fun onMapClick(point: Point): Boolean {
+        Log.d(TAG, "Called")
+        withMapView { mapView ->
+            val pixel = mapView.getMapboxMap()?.pixelForCoordinate(point)
+            pixel?.let { it ->
+
+                val map = mapView.getMapboxMap()
+                map?.queryRenderedFeatures(
+                    RenderedQueryGeometry(it),
+                    RenderedQueryOptions(
+                        getSourceLayerIDS(),
+                        null
+                    ),
+
+                    )
+                { features ->
+                    if (features.isValue) {
+                        val reactContext = context as ReactContext
+                        val surfaceId = UIManagerHelper.getSurfaceId(reactContext)
+                        val eventDispatcher =
+                            UIManagerHelper.getEventDispatcherForReactTag(reactContext, id)
+
+                        val fts = Arguments.createArray()
+
+                        features.value?.let { features ->
+                            if (features.isNotEmpty()) {
+                                features.forEach { features ->
+                                    fts.pushMap(features.queriedFeature.feature.toReadableMap())
+                                }
+                            }
+                        }
+
+                        val payload = Arguments.createMap().apply {
+                            putArray("features", fts)
+                        }
+
+                        Log.d(TAG, "features ${payload}")
+                        val event = OnShapePressEvent(surfaceId, id, payload)
+                        eventDispatcher?.dispatchEvent(event)
+
+                    } else {
+                        Log.d(TAG, "features error ${features.error}")
+                    }
+
+                }
+            }
+
+        }
+
+        return true
+    }
+
+    private fun buildEvent(result: QueryRenderedFeaturesCallback) {
+
+    }
+
     private fun updateSourceAndLayers() {
         withMapView { mapView ->
             scope.launch {
@@ -87,22 +152,25 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
                                 Log.d(TAG, "jsonObject $jsonObject")
 
                                 val type = jsonObject.getString("type")
-                                val sourceBuilder = when(type) {
+                                val sourceBuilder = when (type) {
                                     "Feature" -> GeoJsonSource.Builder(sourceID)
                                         .feature(Feature.fromJson(shapeData))
+
                                     "FeatureCollection" -> GeoJsonSource.Builder(sourceID)
                                         .featureCollection(FeatureCollection.fromJson(shapeData))
+
                                     else -> return@let
                                 }
 
-                                style.addSource(sourceBuilder
-                                    .cluster(cluster)
-                                    .buffer(buffer)
-                                    .tolerance(tolerance)
-                                    .clusterRadius(clusterRadius)
-                                    .clusterMaxZoom(clusterMaxZoom)
-                                    .clusterMinPoints(clusterMinPoints)
-                                    .build()
+                                style.addSource(
+                                    sourceBuilder
+                                        .cluster(cluster)
+                                        .buffer(buffer)
+                                        .tolerance(tolerance)
+                                        .clusterRadius(clusterRadius)
+                                        .clusterMaxZoom(clusterMaxZoom)
+                                        .clusterMinPoints(clusterMinPoints)
+                                        .build()
                                 )
                             } catch (e: JSONException) {
                                 Log.e(TAG, "Invalid JSON format", e)
@@ -119,7 +187,7 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
     }
 
     fun setShape(value: String?) {
-        if(shape != value) {
+        if (shape != value) {
             shape = value
             updateSourceAndLayers()
         }
@@ -128,7 +196,7 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
 
     fun setSourceID(value: String?) {
         value?.let {
-            if(sourceID != it) {
+            if (sourceID != it) {
                 sourceID = it
                 updateSourceAndLayers()
             }
@@ -137,37 +205,38 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
     }
 
     fun setClusterMinPoints(value: Double) {
-        if(clusterMinPoints != value.toLong()) {
+        if (clusterMinPoints != value.toLong()) {
             clusterMinPoints = value.toLong()
         }
     }
 
     fun setClusterMaxZoom(value: Double) {
-        if(clusterMaxZoom != value.toLong()) {
+        if (clusterMaxZoom != value.toLong()) {
             clusterMaxZoom = value.toLong()
         }
     }
 
     fun setClusterRadius(value: Double) {
-        if(clusterRadius != value.toLong()) {
+        if (clusterRadius != value.toLong()) {
             clusterRadius = value.toLong()
         }
     }
+
     fun setCluster(value: Boolean) {
-        if(cluster != value) {
+        if (cluster != value) {
             cluster = value
         }
     }
+
     fun setTolerance(value: Double) {
-        if(tolerance != value) {
+        if (tolerance != value) {
             tolerance = value
         }
     }
+
     fun setBuffer(value: Double) {
-        if(buffer != value.toLong()) {
+        if (buffer != value.toLong()) {
             buffer = value.toLong()
         }
     }
 }
-
-

@@ -2,6 +2,7 @@ package com.rnmapboxtoolkit.fabric
 
 import android.annotation.SuppressLint
 import com.facebook.react.uimanager.ThemedReactContext
+import com.mapbox.geojson.Point
 import com.mapbox.maps.extension.style.layers.generated.CircleLayer
 
 

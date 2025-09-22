@@ -3,6 +3,7 @@ import NativeComponentShapeSource from '../../specs/NativeComponentShapeSource';
 
 import { type ShapeSourceProps } from './ShapeSource.type';
 import { isCircleLayer, isFillLayer, isLineLayer } from '../tools';
+import type { NativeSyntheticEvent } from 'react-native';
 
 type NShapeSource = {
   children: React.ReactNode;
@@ -41,13 +42,29 @@ const ShapeSource: React.FC<NShapeSource> = (props) => {
     });
   }, [props.children, props.sourceID]);
 
+  const onShapePressed = (
+    e: NativeSyntheticEvent<{
+      features: GeoJSON.Feature;
+    }>
+  ) => {
+    if (props?.onPress) {
+      props.onPress?.(e.nativeEvent.features);
+    }
+  };
+
   React.useEffect(() => {
     if (process.env.NODE_ENV === 'production') return;
 
     dev__checkLayerID();
   }, [dev__checkLayerID]);
 
-  return <NativeComponentShapeSource {...props} shape={geojson} />;
+  return (
+    <NativeComponentShapeSource
+      {...props}
+      onPress={onShapePressed}
+      shape={geojson}
+    />
+  );
 };
 
 export default ShapeSource;
