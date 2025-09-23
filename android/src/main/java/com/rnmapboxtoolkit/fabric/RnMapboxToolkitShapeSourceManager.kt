@@ -1,6 +1,7 @@
 package com.rnmapboxtoolkit.fabric
 
 import android.view.View
+import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.ViewGroupManager
@@ -104,6 +105,13 @@ class RnMapboxToolkitShapeSourceManager :
         value: Double
     ) {
         view?.setClusterMinPoints(value)
+    }
+
+    override fun setHitSlopArea(
+        view: RnMapboxToolkitShapeSource?,
+        value: ReadableMap?
+    ) {
+        view?.setHitSlopArea(value)
     }
 
     companion object {

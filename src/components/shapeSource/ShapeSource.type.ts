@@ -63,6 +63,14 @@ export type ShapeSourceProps = {
    */
   clusterMinPoints?: number;
 
+  /**
+   * Converts a geographic point to a screen box for hit
+   */
+  hitSlopArea?: {
+    width: number;
+    height: number;
+  };
+
   onPress?: (e: GeoJSON.Feature) => void;
 };
 

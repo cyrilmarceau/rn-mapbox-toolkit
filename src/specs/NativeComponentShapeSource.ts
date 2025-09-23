@@ -24,6 +24,11 @@ interface NativeComponentsShapeSourceProps extends ViewProps {
   clusterMaxZoom?: Double;
   clusterMinPoints?: Double;
 
+  hitSlopArea?: {
+    width: Double;
+    height: Double;
+  };
+
   onPress?: OnPressHandler;
 }
 

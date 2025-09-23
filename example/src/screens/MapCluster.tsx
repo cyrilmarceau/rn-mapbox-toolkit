@@ -2048,6 +2048,10 @@ export default function MapCluster() {
           sourceID="source-paris"
           onPress={(feature) => console.log(feature)}
           cluster={true}
+          hitSlopArea={{
+            width: 100,
+            height: 100,
+          }}
         >
           <CircleLayer
             layerID="points"

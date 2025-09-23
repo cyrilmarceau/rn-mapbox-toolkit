@@ -4,14 +4,17 @@ import android.annotation.SuppressLint
 import android.util.Log
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactContext
+import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.UIManagerHelper
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.Point
+import com.mapbox.maps.MapboxMap
 import com.mapbox.maps.QueriedRenderedFeature
 import com.mapbox.maps.RenderedQueryGeometry
 import com.mapbox.maps.RenderedQueryOptions
+import com.mapbox.maps.ScreenBox
 import com.mapbox.maps.ScreenCoordinate
 import com.mapbox.maps.Style
 import com.mapbox.maps.coroutine.awaitStyle
@@ -23,7 +26,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.json.JSONException
 import org.json.JSONObject
 
 
@@ -41,6 +43,7 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
     private var clusterMinPoints: Long = 2
     private var tolerance: Double = 0.375
     private var buffer: Long = 128
+    private var hitSlop: HitSlop? = null
 
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
@@ -92,22 +95,54 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
     }
 
     override fun onMapClick(point: Point): Boolean {
-        Log.d(TAG, "Called")
         withMapView { mapView -> handleMapClick(mapView, point) }
 
         return true
     }
 
     private fun handleMapClick(mapView: RnMapboxToolkitView, point: Point) {
-        val pixel = convertPointToPixel(mapView, point)
-        pixel?.let { it -> queryFeaturesAtPixel(mapView, it) }
+        mapView.getMapboxMap()?.let { mapboxMap ->
+            val pixel = convertPointToPixel(mapboxMap, point)
+            queryFeaturesAtPixel(mapView, pixel)
+        }
+
     }
 
-    private fun convertPointToPixel(mapView: RnMapboxToolkitView, point: Point): ScreenCoordinate? {
-        return mapView.getMapboxMap()?.pixelForCoordinate(point)
+    private fun convertPointToPixel(map: MapboxMap, point: Point): ScreenBox {
+        val pixel = map.pixelForCoordinate(point)
+
+        val currentHitSlop = hitSlop
+
+        if (currentHitSlop == null) {
+            return ScreenBox(pixel, pixel)
+        }
+
+        val halfWidth = currentHitSlop.width / 2
+        val halfHeight = currentHitSlop.height / 2
+
+        pixel.let { it ->
+            val topLeft = ScreenCoordinate(
+                pixel.x - halfWidth,
+                pixel.y - halfHeight
+            )
+            val bottomRight = ScreenCoordinate(
+                pixel.x + halfWidth,
+                pixel.y + halfHeight
+            )
+
+            Log.d(TAG, "topLeft: $topLeft")
+            Log.d(TAG, "bottomRight: $bottomRight")
+
+            val screenCoordinate = ScreenBox(topLeft, bottomRight)
+
+            return screenCoordinate
+        }
     }
 
-    private fun queryFeaturesAtPixel(mapView: RnMapboxToolkitView, pixel: ScreenCoordinate) {
+    /**
+     * Query rendered features at the given pixel with additional hitSlop.
+     */
+    private fun queryFeaturesAtPixel(mapView: RnMapboxToolkitView, pixel: ScreenBox) {
         val map = mapView.getMapboxMap()
 
         map?.queryRenderedFeatures(
@@ -281,4 +316,14 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
             buffer = value.toLong()
         }
     }
+
+    fun setHitSlopArea(value: ReadableMap?) {
+        value?.let {
+            val width = it.getDouble("width")
+            val height = it.getDouble("height")
+            hitSlop = HitSlop(width, height)
+        }
+    }
+
+    data class HitSlop(val width: Double, val height: Double)
 }
