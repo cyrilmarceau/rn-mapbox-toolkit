@@ -71,7 +71,19 @@ export type ShapeSourceProps = {
     height: number;
   };
 
-  onPress?: (e: GeoJSON.Feature) => void;
+  onPress?: (e: GeoJSON.Feature[]) => void;
+
+  children: React.ReactNode;
 };
 
-export interface ShapeSourceRef {}
+export type GetGeoJsonClusterLeaves = {
+  feature: GeoJSON.Feature;
+  limit: number;
+  offset: number;
+};
+
+export type ShapeSourceRef = {
+  getGeoJsonClusterLeaves: (
+    params: GetGeoJsonClusterLeaves
+  ) => Promise<GeoJSON.FeatureCollection>;
+};

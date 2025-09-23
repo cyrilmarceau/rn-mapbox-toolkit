@@ -1,14 +1,31 @@
 package com.rnmapboxtoolkit.extensions
 
 
+import android.util.Log
 import com.facebook.react.bridge.WritableMap
+import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
 import com.google.gson.JsonObject
 import com.mapbox.geojson.Feature
+import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.Geometry
 import com.mapbox.geojson.Point
 
-fun Feature.toReadableMap() : WritableNativeMap {
+/**
+ * Parse a [FeatureCollection] to a [WritableMap]
+ */
+fun FeatureCollection.toReadableMap(): WritableNativeMap {
+    Log.d("Extension", this.toJson())
+    return WritableNativeMap().apply {
+        putString("type", this@toReadableMap.type())
+        putArray("features", this@toReadableMap.features()?.toReadableArray())
+    }
+}
+
+/**
+ * Parse a [Feature] to a [WritableMap]
+ */
+fun Feature.toReadableMap(): WritableNativeMap {
     return WritableNativeMap().apply {
         putString("type", this@toReadableMap.type())
         putString("id", this@toReadableMap.id())
@@ -17,21 +34,35 @@ fun Feature.toReadableMap() : WritableNativeMap {
     }
 }
 
+/**
+ * Parse a [Geometry] to a [WritableMap]
+ */
 fun Geometry.toReadableMap(): WritableMap {
     return WritableNativeMap().apply {
         putString("type", this@toReadableMap.type())
         when (this@toReadableMap) {
             is Point -> {
-                putMap("coordinates", this@toReadableMap.toReadableMap())
+                putArray("coordinates", this@toReadableMap.toReadableArray())
             }
         }
     }
 }
 
-fun Point.toReadableMap() : WritableNativeMap {
-    return WritableNativeMap().apply {
-        putDouble("longitude", this@toReadableMap.longitude())
-        putDouble("latitude", this@toReadableMap.latitude())
+/**
+ * Parse a [FeatureCollection] to a [WritableNativeArray]
+ */
+fun List<Feature>.toReadableArray(): WritableNativeArray {
+    return WritableNativeArray().apply {
+        this@toReadableArray.forEach { feature ->
+            pushMap(feature.toReadableMap())
+        }
+    }
+}
+
+fun Point.toReadableArray(): WritableNativeArray {
+    return WritableNativeArray().apply {
+        pushDouble(this@toReadableArray.latitude())
+        pushDouble(this@toReadableArray.longitude())
     }
 }
 
@@ -41,7 +72,7 @@ fun JsonObject.toReadableMap(): WritableMap {
     for (key in this.keySet()) {
         val value = this.get(key)
 
-        if(value.isJsonPrimitive) {
+        if (value.isJsonPrimitive) {
             val valueToPrimitive = value.asJsonPrimitive
 
             when {

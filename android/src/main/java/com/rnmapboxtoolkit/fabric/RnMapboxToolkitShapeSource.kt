@@ -5,6 +5,7 @@ import android.util.Log
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.WritableMap
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.UIManagerHelper
 import com.mapbox.geojson.Feature
@@ -261,6 +262,45 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
 
     private fun addChildLayers(mapView: RnMapboxToolkitView) {
         childLayers.forEach { it.addToMap(mapView) }
+    }
+
+
+    fun getGeoJsonClusterLeaves(
+        featureJSON: String,
+        limit: Double,
+        offset: Double,
+        callback: (WritableMap?) -> Unit
+    ) {
+        withMapView { mapView ->
+            val feature = Feature.fromJson(featureJSON)
+
+            mapView.getMapboxMap()?.getGeoJsonClusterLeaves(
+                sourceID,
+                feature,
+                limit.toLong(),
+                offset.toLong(),
+                { features ->
+                    if (features.isValue) {
+                        handleClusterLeavesSuccess(
+                            features.value?.featureCollection,
+                            callback
+                        )
+                    }
+
+                }
+            )
+        }
+    }
+
+    private fun handleClusterLeavesSuccess(
+        features: List<Feature>?,
+        callback: (WritableMap?) -> Unit
+    ) {
+        if (features != null) {
+            callback(FeatureCollection.fromFeatures(features).toReadableMap())
+        } else {
+            callback(null)
+        }
     }
 
     fun setShape(value: String?) {

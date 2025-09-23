@@ -4,12 +4,15 @@ import ShapeSource from './components/shapeSource/ShapeSource';
 import LineLayer from './components/lineLayer/LineLayer';
 import CircleLayer from './components/circleLayer/CircleLayer';
 import FillLayer from './components/fillLayer/FillLayer';
+import { type ShapeSourceRef } from './components/shapeSource/ShapeSource.type';
+
 export {
   MapView,
   type MapViewRef,
   Camera,
   type CameraRef,
   ShapeSource,
+  type ShapeSourceRef,
   LineLayer,
   CircleLayer,
   FillLayer,

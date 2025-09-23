@@ -1,4 +1,4 @@
-import type { FeatureCollection, Geometry } from 'geojson';
+import type { Feature, FeatureCollection, Geometry } from 'geojson';
 import React from 'react';
 import { Button, StyleSheet } from 'react-native';
 import {
@@ -6,9 +6,10 @@ import {
   CircleLayer,
   MapView,
   ShapeSource,
+  type ShapeSourceRef,
   type CameraRef,
 } from 'rn-mapbox-toolkit';
-
+import * as turf from '@turf/turf';
 const shapes: FeatureCollection<Geometry> = {
   type: 'FeatureCollection',
   features: [
@@ -2017,6 +2018,7 @@ const shapes: FeatureCollection<Geometry> = {
 
 export default function MapCluster() {
   const cameraRef = React.useRef<CameraRef | null>(null);
+  const shapeSourceRef = React.useRef<ShapeSourceRef | null>(null);
 
   const handleFlyTo = async () => {
     try {
@@ -2026,6 +2028,29 @@ export default function MapCluster() {
       });
     } catch (error) {
       console.error('An error occurred', error);
+    }
+  };
+
+  const onPress = async (e: Feature[]) => {
+    const feature = e[0];
+    if (feature === undefined) return;
+
+    try {
+      if (feature.properties?.cluster) {
+        const params = {
+          feature: feature,
+          limit: 100,
+          offset: 0,
+        };
+        const clusterLeaves =
+          await shapeSourceRef.current?.getGeoJsonClusterLeaves(params);
+
+        if (clusterLeaves !== undefined) {
+          console.log(turf.bbox(clusterLeaves));
+        }
+      }
+    } catch (error) {
+      console.warn('MapCluster() >> onPress() >> error', error);
     }
   };
 
@@ -2044,14 +2069,15 @@ export default function MapCluster() {
       >
         <Camera ref={cameraRef} />
         <ShapeSource
+          ref={shapeSourceRef}
           shape={shapes}
           sourceID="source-paris"
-          onPress={(feature) => console.log(feature)}
+          onPress={onPress}
           cluster={true}
-          hitSlopArea={{
-            width: 100,
-            height: 100,
-          }}
+          // hitSlopArea={{
+          //   width: 100,
+          //   height: 100,
+          // }}
         >
           <CircleLayer
             layerID="points"

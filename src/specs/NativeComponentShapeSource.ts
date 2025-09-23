@@ -11,7 +11,7 @@ import type {
 import type { UnsafeMixed } from './codegenUtils';
 
 export type OnPressHandler = DirectEventHandler<{
-  features: UnsafeMixed<GeoJSON.Feature>;
+  features: UnsafeMixed<GeoJSON.Feature[]>;
 }>;
 
 interface NativeComponentsShapeSourceProps extends ViewProps {
