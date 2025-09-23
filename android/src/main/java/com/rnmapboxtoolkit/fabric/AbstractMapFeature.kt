@@ -24,7 +24,7 @@ abstract class AbstractMapFeature(context: Context?) : ReactViewGroup(context), 
 
         fun getSourceLayerIDS(): List<String> = sourceLayerIDS
 
-        fun addLayerID(layerID: String) {
+        fun addLayerToSource(layerID: String) {
             Log.d("AbstractMapFeature", "addLayerID ${layerID}")
             sourceLayerIDS.add(layerID)
         }
