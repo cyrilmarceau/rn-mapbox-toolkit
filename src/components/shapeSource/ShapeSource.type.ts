@@ -86,4 +86,6 @@ export type ShapeSourceRef = {
   getGeoJsonClusterLeaves: (
     params: GetGeoJsonClusterLeaves
   ) => Promise<GeoJSON.FeatureCollection>;
+  getGeoJsonClusterExpansionZoom: (feature: GeoJSON.Feature) => Promise<number>;
+  getGeoJsonClusterChildren: (feature: GeoJSON.Feature) => Promise<null>;
 };

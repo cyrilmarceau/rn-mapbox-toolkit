@@ -6,6 +6,8 @@ import MapCluster from '../screens/MapCluster';
 import MapFillLayer from '../screens/MapFillLayer';
 import MapLineLayer from '../screens/MapLineLayer';
 import MapSettings from '../screens/MapSettings';
+import MapClusterChildren from '../screens/MapClusterChildren';
+import MapClusterZoom from '../screens/MapClusterZoom';
 
 export interface ScreenConfig {
   label: string;
@@ -53,6 +55,16 @@ const SCREENS: ScreenConfig[] = [
     label: 'MapCluster',
     route: 'MapCluster',
     component: MapCluster,
+  },
+  {
+    label: 'MapClusterZoom',
+    route: 'MapClusterZoom',
+    component: MapClusterZoom,
+  },
+  {
+    label: 'MapClusterChildren',
+    route: 'MapClusterChildren',
+    component: MapClusterChildren,
   },
 ];
 

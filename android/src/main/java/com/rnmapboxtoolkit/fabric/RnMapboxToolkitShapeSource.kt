@@ -303,6 +303,28 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
         }
     }
 
+    fun getGeoJsonClusterExpansionZoom(featureJSON: String, callback: (Int) -> Unit) {
+        withMapView { mapView ->
+            val feature = Feature.fromJson(featureJSON)
+
+            mapView.getMapboxMap()?.getGeoJsonClusterExpansionZoom(
+                sourceID,
+                feature
+            ) { zoom ->
+                if (zoom.isValue) {
+                    Log.d(TAG, "zoom.value?.value ${zoom.value?.value}")
+
+                    val zoomContent = zoom.value?.value?.contents
+                    if (zoomContent is Long) {
+                        callback(zoomContent.toInt())
+                    } else {
+                        callback(-1)
+                    }
+                }
+            }
+        }
+    }
+
     fun setShape(value: String?) {
         if (shape != value) {
             shape = value

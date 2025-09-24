@@ -79,6 +79,46 @@ const ShapeSource = React.forwardRef<ShapeSourceRef, ShapeSourceProps>(
       }
     };
 
+    const getGeoJsonClusterExpansionZoom = async (
+      feature: GeoJSON.Feature
+    ): Promise<number> => {
+      const viewTag = findNodeHandle(nativeRef.current);
+      if (!viewTag) {
+        throw new Error('Could not find native ShapeSource ref');
+      }
+
+      try {
+        const JSONFeature = JSON.stringify(feature);
+
+        return await NativeShapeSourceModule.getGeoJsonClusterExpansionZoom(
+          viewTag,
+          JSONFeature
+        );
+      } catch (error) {
+        throw new Error('Failed to getGeoJsonClusterLeaves');
+      }
+    };
+
+    const getGeoJsonClusterChildren = async (
+      feature: GeoJSON.Feature
+    ): Promise<null> => {
+      const viewTag = findNodeHandle(nativeRef.current);
+      if (!viewTag) {
+        throw new Error('Could not find native ShapeSource ref');
+      }
+
+      try {
+        const JSONFeature = JSON.stringify(feature);
+
+        return await NativeShapeSourceModule.getGeoJsonClusterChildren(
+          viewTag,
+          JSONFeature
+        );
+      } catch (error) {
+        throw new Error('Failed to getGeoJsonClusterLeaves');
+      }
+    };
+
     React.useEffect(() => {
       if (process.env.NODE_ENV === 'production') return;
 
@@ -87,6 +127,8 @@ const ShapeSource = React.forwardRef<ShapeSourceRef, ShapeSourceProps>(
 
     React.useImperativeHandle(ref, () => ({
       getGeoJsonClusterLeaves,
+      getGeoJsonClusterExpansionZoom,
+      getGeoJsonClusterChildren,
     }));
 
     return (
