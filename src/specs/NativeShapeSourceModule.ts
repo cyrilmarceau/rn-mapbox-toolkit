@@ -13,7 +13,10 @@ export interface Spec extends TurboModule {
     feature: string
   ): Promise<number>;
 
-  getGeoJsonClusterChildren(viewTag: number, feature: string): Promise<null>;
+  getGeoJsonClusterChildren(
+    viewTag: number,
+    feature: string
+  ): Promise<GeoJSON.FeatureCollection>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>(

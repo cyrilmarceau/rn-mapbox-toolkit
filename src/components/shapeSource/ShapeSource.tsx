@@ -101,7 +101,7 @@ const ShapeSource = React.forwardRef<ShapeSourceRef, ShapeSourceProps>(
 
     const getGeoJsonClusterChildren = async (
       feature: GeoJSON.Feature
-    ): Promise<null> => {
+    ): Promise<GeoJSON.FeatureCollection> => {
       const viewTag = findNodeHandle(nativeRef.current);
       if (!viewTag) {
         throw new Error('Could not find native ShapeSource ref');
