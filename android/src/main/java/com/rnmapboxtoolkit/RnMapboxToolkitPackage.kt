@@ -12,6 +12,7 @@ import com.rnmapboxtoolkit.fabric.RnMapboxToolkitShapeSourceManager
 import com.rnmapboxtoolkit.fabric.RnMapboxToolkitViewManager
 import com.rnmapboxtoolkit.modules.NativeCameraModule
 import com.rnmapboxtoolkit.modules.NativeMapViewModule
+import com.rnmapboxtoolkit.modules.NativeShapeSourceModule
 import java.util.ArrayList
 
 class RnMapboxToolkitViewPackage : ReactPackage {
@@ -29,7 +30,8 @@ class RnMapboxToolkitViewPackage : ReactPackage {
   override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
       return listOf(
           NativeMapViewModule(reactContext),
-          NativeCameraModule(reactContext)
+          NativeCameraModule(reactContext),
+          NativeShapeSourceModule(reactContext)
       )
   }
 }

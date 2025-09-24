@@ -1,7 +1,10 @@
 package com.rnmapboxtoolkit.fabric
 
 import android.content.Context
+import android.util.Log
 import com.facebook.react.views.view.ReactViewGroup
+import com.mapbox.geojson.Point
+import com.mapbox.maps.plugin.gestures.OnMapClickListener
 
 // Source of this file : https://github.com/rnmapbox/maps/blob/b21565f56c858a91ed695650b1ac4a07fcb23098/android/src/main/java/com/rnmapbox/rnmbx/components/AbstractMapFeature.kt
 enum class RemovalReason {
@@ -11,9 +14,29 @@ enum class RemovalReason {
     REORDER
 }
 
-abstract class AbstractMapFeature(context: Context?) : ReactViewGroup(context) {
+abstract class AbstractMapFeature(context: Context?) : ReactViewGroup(context), OnMapClickListener {
+
+    companion object {
+        /**
+         * Share layerIDS across multiple instance
+         */
+        private val sourceLayerIDS: MutableList<String> = mutableListOf()
+
+        fun getSourceLayerIDS(): List<String> = sourceLayerIDS
+
+        fun addLayerToSource(layerID: String) {
+            Log.d("AbstractMapFeature", "addLayerID ${layerID}")
+            sourceLayerIDS.add(layerID)
+        }
+    }
+
     protected var mMapView: RnMapboxToolkitView? = null
     private var mWithMapViewCallbacks: MutableList<(RnMapboxToolkitView) -> Unit> = mutableListOf()
+
+
+    override fun onMapClick(point: Point): Boolean {
+        return false
+    }
 
     open fun addToMap(mapView: RnMapboxToolkitView) {
         mMapView = mapView

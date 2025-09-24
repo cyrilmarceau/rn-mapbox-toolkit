@@ -2,7 +2,7 @@ import React from 'react';
 import type { FillLayerProps } from './FillLayer.type';
 import NativeComponentFillLayer from '../../specs/NativeComponentFillLayer';
 
-const CircleLayer: React.FC<FillLayerProps> = (props) => {
+const FillLayer: React.FC<FillLayerProps> = (props) => {
   const styleLayer = React.useMemo(
     () => JSON.stringify(props.layerStyle),
     [props.layerStyle]
@@ -10,4 +10,4 @@ const CircleLayer: React.FC<FillLayerProps> = (props) => {
   return <NativeComponentFillLayer {...props} layerStyle={styleLayer} />;
 };
 
-export default CircleLayer;
+export default FillLayer;
