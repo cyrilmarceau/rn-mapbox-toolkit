@@ -91,10 +91,38 @@ class NativeShapeSourceModule(private val reactContext: ReactApplicationContext)
 
     override fun getGeoJsonClusterChildren(
         viewTag: Double,
-        feature: String?,
-        promise: Promise?
+        feature: String,
+        promise: Promise
     ) {
+        try {
+            UiThreadUtil.runOnUiThread {
+                val uiManager = UIManagerHelper.getUIManager(reactContext, viewTag.toInt())
+                val view = uiManager?.resolveView(viewTag.toInt()) as? RnMapboxToolkitShapeSource
 
+                if (view != null) {
+                    view.getGeoJsonClusterChildren(feature) { features ->
+                        if (features != null) {
+                            promise.resolve(features)
+                        } else {
+                            promise.reject(
+                                "CLUSTER_CHILDREN_ERROR",
+                                "Failed to get cluster children"
+                            )
+                        }
+                    }
+                } else {
+                    promise.reject(
+                        "VIEW_NOT_FOUND",
+                        "Could not find ShapeSource with tag: $viewTag"
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            promise.reject(
+                "GET_GEOJSON_CLUSTER_LEAVES_ERROR",
+                "Error getting zoom level: ${e.message}"
+            )
+        }
     }
 
     companion object {

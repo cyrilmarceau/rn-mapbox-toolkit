@@ -281,7 +281,7 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
                 offset.toLong(),
                 { features ->
                     if (features.isValue) {
-                        handleClusterLeavesSuccess(
+                        handleClusterGeoJsonSuccess(
                             features.value?.featureCollection,
                             callback
                         )
@@ -289,17 +289,6 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
 
                 }
             )
-        }
-    }
-
-    private fun handleClusterLeavesSuccess(
-        features: List<Feature>?,
-        callback: (WritableMap?) -> Unit
-    ) {
-        if (features != null) {
-            callback(FeatureCollection.fromFeatures(features).toReadableMap())
-        } else {
-            callback(null)
         }
     }
 
@@ -322,6 +311,35 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
                     }
                 }
             }
+        }
+    }
+
+    fun getGeoJsonClusterChildren(featureJSON: String, callback: (WritableMap?) -> Unit) {
+        withMapView { mapView ->
+            val feature = Feature.fromJson(featureJSON)
+
+            mapView.getMapboxMap()?.getGeoJsonClusterChildren(
+                sourceID,
+                feature
+            ) { features ->
+                if (features.isValue) {
+                    handleClusterGeoJsonSuccess(
+                        features.value?.featureCollection,
+                        callback
+                    )
+                }
+            }
+        }
+    }
+
+    private fun handleClusterGeoJsonSuccess(
+        features: List<Feature>?,
+        callback: (WritableMap?) -> Unit
+    ) {
+        if (features != null) {
+            callback(FeatureCollection.fromFeatures(features).toReadableMap())
+        } else {
+            callback(null)
         }
     }
 
@@ -386,6 +404,7 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
             hitSlop = HitSlop(width, height)
         }
     }
+
 
     data class HitSlop(val width: Double, val height: Double)
 }
