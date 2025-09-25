@@ -106,7 +106,7 @@ export type FillLayerProps = {
 
     /**
      * Controls the frame of reference for fill-translate.
-     *  @link https://docs.mapbox.com/style-spec/reference/layers/#paint-fill-fill-translate-anchor
+     * @link https://docs.mapbox.com/style-spec/reference/layers/#paint-fill-fill-translate-anchor
      * @default "map"
      */
     'fill-translate-anchor'?: Value<'map' | 'viewport'>;
