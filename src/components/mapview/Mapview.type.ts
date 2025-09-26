@@ -3,6 +3,10 @@ import type { LatLng, PositionToGravity } from '../../common/shared.types';
 import type { StyleURL } from '../../specs/NativeComponentsMapView';
 import type { ViewProps } from 'react-native';
 
+export type MapViewRef = {
+  getZoomLevel: () => Promise<number>;
+};
+
 export type OnMapIdleEvent = NativeSyntheticEvent<{
   properties: {
     pitch: number;

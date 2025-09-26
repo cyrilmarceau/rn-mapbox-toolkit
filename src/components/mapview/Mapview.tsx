@@ -1,12 +1,8 @@
 import React from 'react';
-import type { MapViewProps } from './Mapview.type';
+import { findNodeHandle } from 'react-native';
 import NativeComponentsMapView from '../../specs/NativeComponentsMapView';
 import MapViewTurboModule from '../../specs/NativeMapViewModule';
-import { findNodeHandle } from 'react-native';
-
-export interface MapViewRef {
-  getZoomLevel: () => Promise<number>;
-}
+import type { MapViewProps, MapViewRef } from './Mapview.type';
 
 const MapView = React.forwardRef<MapViewRef, MapViewProps>((props, ref) => {
   const nativeRef = React.useRef<React.ElementRef<

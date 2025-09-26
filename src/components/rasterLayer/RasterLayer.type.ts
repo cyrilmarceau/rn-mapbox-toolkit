@@ -166,4 +166,4 @@ export type RasterLayerProps = {
  * Type defining the style properties for a "circle" layer according to the Mapbox Style Specification.
  * @see https://docs.mapbox.com/style-spec/reference/layers/#background
  */
-export type RasterStyle = Pick<RasterLayerProps, 'layerStyle'>;
+export type RasterLayerStyle = Pick<RasterLayerProps, 'layerStyle'>;

@@ -1,5 +1,17 @@
 import type { LatLng, Point } from '../../common/shared.types';
 
+export type CameraRef = {
+  getZoomLevel: () => Promise<number>;
+  flyTo: (
+    cameraOptions: CameraOptions,
+    animationOptions?: AnimationOptions
+  ) => Promise<void>;
+  easeTo: (
+    cameraOptions: CameraOptions,
+    animationOptions?: AnimationOptions
+  ) => Promise<void>;
+};
+
 export type CameraViewProps = {
   /**
    * The minimum zoom level, in Mapbox zoom levels 0-25.5.

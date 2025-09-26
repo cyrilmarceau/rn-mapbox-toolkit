@@ -78,4 +78,4 @@ export type BackgroundLayerProps = {
  * Type defining the style properties for a "circle" layer according to the Mapbox Style Specification.
  * @see https://docs.mapbox.com/style-spec/reference/layers/#background
  */
-export type BackgroundStyle = Pick<BackgroundLayerProps, 'layerStyle'>;
+export type BackgroundLayerStyle = Pick<BackgroundLayerProps, 'layerStyle'>;

@@ -113,4 +113,4 @@ export type HeatmapLayerProps = {
  * Type defining the style properties for a "circle" layer according to the Mapbox Style Specification.
  * @see https://docs.mapbox.com/style-spec/reference/layers/#background
  */
-export type HeatmapStyleStyle = Pick<HeatmapLayerProps, 'layerStyle'>;
+export type HeatmapLayerStyle = Pick<HeatmapLayerProps, 'layerStyle'>;

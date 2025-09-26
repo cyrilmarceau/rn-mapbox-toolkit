@@ -161,4 +161,4 @@ export type SkyLayerProps = {
  * Type defining the style properties for a "circle" layer according to the Mapbox Style Specification.
  * @see https://docs.mapbox.com/style-spec/reference/layers/#background
  */
-export type RasterStyle = Pick<SkyLayerProps, 'layerStyle'>;
+export type SkyLayerStyle = Pick<SkyLayerProps, 'layerStyle'>;

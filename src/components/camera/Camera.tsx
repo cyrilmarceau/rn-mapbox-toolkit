@@ -2,6 +2,7 @@ import React from 'react';
 import {
   type AnimationOptions,
   type CameraOptions,
+  type CameraRef,
   type CameraViewProps,
 } from './Camera.type';
 import { findNodeHandle } from 'react-native';
@@ -10,19 +11,7 @@ import NativeComponentCamera, {
   Commands,
 } from '../../specs/NativeComponentCamera';
 
-export interface CameraRef {
-  getZoomLevel: () => Promise<number>;
-  flyTo: (
-    cameraOptions: CameraOptions,
-    animationOptions?: AnimationOptions
-  ) => Promise<void>;
-  easeTo: (
-    cameraOptions: CameraOptions,
-    animationOptions?: AnimationOptions
-  ) => Promise<void>;
-}
-
-export type NCC = React.ElementRef<typeof NativeComponentCamera>;
+type NCC = React.ElementRef<typeof NativeComponentCamera>;
 
 const Camera = React.forwardRef<CameraRef, CameraViewProps>((props, ref) => {
   const nativeRef = React.useRef<NCC | null>(null);

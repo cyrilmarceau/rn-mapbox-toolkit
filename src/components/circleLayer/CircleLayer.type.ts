@@ -139,4 +139,4 @@ export type CircleLayerProps = {
  * Type defining the style properties for a "circle" layer according to the Mapbox Style Specification.
  * @see https://docs.mapbox.com/style-spec/reference/layers/#circle
  */
-export type CircleStyle = Pick<CircleLayerProps, 'layerStyle'>;
+export type CircleLayerStyle = Pick<CircleLayerProps, 'layerStyle'>;
