@@ -7,6 +7,7 @@ import com.facebook.react.uimanager.ViewManager
 import com.rnmapboxtoolkit.fabric.RnMapboxToolkitBackgroundLayerManager
 import com.rnmapboxtoolkit.fabric.RnMapboxToolkitCameraManager
 import com.rnmapboxtoolkit.fabric.RnMapboxToolkitCircleLayerManager
+import com.rnmapboxtoolkit.fabric.RnMapboxToolkitFillExtrusionLayerManager
 import com.rnmapboxtoolkit.fabric.RnMapboxToolkitFillLayerManager
 import com.rnmapboxtoolkit.fabric.RnMapboxToolkitLineLayerManager
 import com.rnmapboxtoolkit.fabric.RnMapboxToolkitShapeSourceManager
@@ -26,7 +27,8 @@ class RnMapboxToolkitViewPackage : ReactPackage {
             RnMapboxToolkitLineLayerManager(),
             RnMapboxToolkitFillLayerManager(),
             RnMapboxToolkitSkyLayerManager(),
-            RnMapboxToolkitBackgroundLayerManager()
+            RnMapboxToolkitBackgroundLayerManager(),
+            RnMapboxToolkitFillExtrusionLayerManager()
         )
     }
 
