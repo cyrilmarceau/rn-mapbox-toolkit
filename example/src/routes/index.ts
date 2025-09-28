@@ -1,13 +1,14 @@
 import ScreenList from '../GroupScreen';
+import MapBackgroundLayer from '../screens/MapBackgroundLayer';
 import MapCamera from '../screens/MapCamera';
 import MapCircleLayer from '../screens/MapCircleLayer';
-import MapEventsListener from '../screens/MapEventsListener';
 import MapCluster from '../screens/MapCluster';
+import MapClusterChildren from '../screens/MapClusterChildren';
+import MapClusterZoom from '../screens/MapClusterZoom';
+import MapEventsListener from '../screens/MapEventsListener';
 import MapFillLayer from '../screens/MapFillLayer';
 import MapLineLayer from '../screens/MapLineLayer';
 import MapSettings from '../screens/MapSettings';
-import MapClusterChildren from '../screens/MapClusterChildren';
-import MapClusterZoom from '../screens/MapClusterZoom';
 import MapSkyLayer from '../screens/MapSkyLayer';
 
 export interface ScreenConfig {
@@ -71,6 +72,11 @@ const SCREENS: ScreenConfig[] = [
     label: 'MapSkyLayer',
     route: 'MapSkyLayer',
     component: MapSkyLayer,
+  },
+  {
+    label: 'MapBackgroundLayer',
+    route: 'MapBackgroundLayer',
+    component: MapBackgroundLayer,
   },
 ];
 

@@ -1,5 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { SCREENS } from './routes';
 
 const ScreenList = () => {
@@ -9,7 +15,7 @@ const ScreenList = () => {
     navigation.navigate(route as never);
   };
   return (
-    <>
+    <ScrollView>
       {SCREENS.map((screen, index) => (
         <View
           key={`${screen.label}-${index}`}
@@ -22,7 +28,7 @@ const ScreenList = () => {
           </TouchableOpacity>
         </View>
       ))}
-    </>
+    </ScrollView>
   );
 };
 

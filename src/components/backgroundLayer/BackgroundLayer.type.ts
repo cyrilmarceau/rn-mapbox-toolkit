@@ -9,10 +9,6 @@ export type BackgroundLayerProps = {
    * The unique identifier for the layer.
    */
   layerID: string;
-  /**
-   * Data source identifier for the layer.
-   */
-  sourceID: string;
 
   /**
    * Minimum zoom level at which the layer is visible.
@@ -32,7 +28,7 @@ export type BackgroundLayerProps = {
      * Disabled by background-pattern
      * @default "#000000"
      */
-    'background-color'?: Value<number>;
+    'background-color'?: Value<string>;
 
     /**
      * Controls the intensity of light emitted on the source features.
