@@ -8,6 +8,7 @@ import MapLineLayer from '../screens/MapLineLayer';
 import MapSettings from '../screens/MapSettings';
 import MapClusterChildren from '../screens/MapClusterChildren';
 import MapClusterZoom from '../screens/MapClusterZoom';
+import MapSkyLayer from '../screens/MapSkyLayer';
 
 export interface ScreenConfig {
   label: string;
@@ -65,6 +66,11 @@ const SCREENS: ScreenConfig[] = [
     label: 'MapClusterChildren',
     route: 'MapClusterChildren',
     component: MapClusterChildren,
+  },
+  {
+    label: 'MapSkyLayer',
+    route: 'MapSkyLayer',
+    component: MapSkyLayer,
   },
 ];
 

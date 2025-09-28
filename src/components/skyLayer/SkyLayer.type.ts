@@ -9,10 +9,6 @@ export type SkyLayerProps = {
    * The unique identifier for the layer.
    */
   layerID: string;
-  /**
-   * Data source identifier for the layer.
-   */
-  sourceID: string;
 
   /**
    * Minimum zoom level at which the layer is visible.

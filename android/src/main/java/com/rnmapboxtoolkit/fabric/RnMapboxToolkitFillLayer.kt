@@ -14,8 +14,9 @@ class RnMapboxToolkitFillLayer(context: ThemedReactContext) : AbstractLayer<Fill
 
     override fun createLayer(
         layerId: String,
-        sourceId: String
+        sourceId: String?
     ): FillLayer {
+        requireNotNull(sourceId) { "FillLayer requires a sourceId" }
         return FillLayer(layerId, sourceId)
     }
 }

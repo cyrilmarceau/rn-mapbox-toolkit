@@ -18,8 +18,6 @@ interface NativeComponentsSkyLayerProps extends ViewProps {
   layerID: string;
   minZoom?: Double;
   maxZoom?: Double;
-
-  sourceID: string;
   /**
    * Omit type is refused by codegen so use other name only from ts -> kt
    */

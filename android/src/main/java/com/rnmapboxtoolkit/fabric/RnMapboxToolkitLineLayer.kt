@@ -15,8 +15,10 @@ class RnMapboxToolkitLineLayer(context: ThemedReactContext) : AbstractLayer<Line
 
     override fun createLayer(
         layerId: String,
-        sourceId: String
+        sourceId: String?
     ): LineLayer {
+        requireNotNull(sourceId) { "sourceID is required for LineLayer" }
+        
         return LineLayer(layerId, sourceId)
     }
 

@@ -28,7 +28,7 @@ abstract class AbstractLayer<T : Layer>(context: ThemedReactContext) : AbstractM
         const val TAG = "AbstractLayer"
     }
 
-    data class LayerData(val sourceId: String, val layerId: String)
+    data class LayerData(val sourceId: String?, val layerId: String)
 
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
@@ -43,7 +43,8 @@ abstract class AbstractLayer<T : Layer>(context: ThemedReactContext) : AbstractM
     private var pendingProps: MutableMap<String, Any> = mutableMapOf()
 
     // Create appropriate layer with given layerId and sourceId and generic Layer
-    protected abstract fun createLayer(layerId: String, sourceId: String): T
+
+    protected abstract fun createLayer(layerId: String, sourceId: String?): T
 
     override fun addToMap(mapView: RnMapboxToolkitView) {
         super.addToMap(mapView)
@@ -108,6 +109,7 @@ abstract class AbstractLayer<T : Layer>(context: ThemedReactContext) : AbstractM
 
 
     private suspend fun addLayerToMap(mapView: RnMapboxToolkitView) {
+
         mapView.getMapboxMap() ?: return
         val style = getMapStyle(mapView) ?: return
         val layerData = getValidLayerData() ?: return
@@ -119,6 +121,7 @@ abstract class AbstractLayer<T : Layer>(context: ThemedReactContext) : AbstractM
 
         val layer = createNewLayer(layerData)
 
+        Log.d(TAG, "creating layer ${layer.layerId}")
         // for detect MapClick (Cluster ...) we need to now which layer exist for RenderedQueryOptions
         addLayerToSource(layerData.layerId)
 
@@ -213,11 +216,6 @@ abstract class AbstractLayer<T : Layer>(context: ThemedReactContext) : AbstractM
         return when {
             currentLayerID == null -> {
                 Log.e(TAG, "LayerID is null, cannot create layer")
-                return null
-            }
-
-            currentSourceID == null -> {
-                Log.e(TAG, "SourceID is null, cannot create layer")
                 return null
             }
 

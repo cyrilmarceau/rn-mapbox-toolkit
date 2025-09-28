@@ -15,8 +15,9 @@ class RnMapboxToolkitCircleLayer(context: ThemedReactContext) : AbstractLayer<Ci
 
     override fun createLayer(
         layerId: String,
-        sourceId: String
+        sourceId: String?
     ): CircleLayer {
+        requireNotNull(sourceId) { "sourceID is required for CircleLayer" }
         return CircleLayer(layerId, sourceId)
     }
 

@@ -1,5 +1,7 @@
 scripts
 
+example/android/.kotlin/
+
 # OSX
 #
 .DS_Store
