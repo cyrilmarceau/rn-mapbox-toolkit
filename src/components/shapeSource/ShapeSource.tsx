@@ -21,6 +21,14 @@ const ShapeSource = React.forwardRef<ShapeSourceRef, ShapeSourceProps>(
       [props.shape]
     );
 
+    if (!props.shape && !props.url) {
+      throw new Error('ShapeSource requires a shape or url prop');
+    }
+
+    if (props.shape && props.url) {
+      throw new Error('ShapeSource cannot use url and shape in same time');
+    }
+
     /**
      * Instead of throw new Error in native side because it's not really one
      * Informate in js side of duplicate error
@@ -134,8 +142,8 @@ const ShapeSource = React.forwardRef<ShapeSourceRef, ShapeSourceProps>(
     return (
       <NativeComponentShapeSource
         {...props}
-        onPress={onShapePressed}
         shape={geojson}
+        onPress={onShapePressed}
         ref={nativeRef}
       />
     );

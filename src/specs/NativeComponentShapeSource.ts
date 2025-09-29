@@ -15,7 +15,8 @@ export type OnPressHandler = DirectEventHandler<{
 }>;
 
 interface NativeComponentsShapeSourceProps extends ViewProps {
-  shape: string;
+  url?: string;
+  shape?: string;
   sourceID: string;
   buffer?: Double;
   tolerance?: Double;

@@ -51,6 +51,13 @@ class RnMapboxToolkitShapeSourceManager :
         super.removeViewAt(parent, index)
     }
 
+    override fun setUrl(
+        view: RnMapboxToolkitShapeSource?,
+        value: String?
+    ) {
+        view?.setUrl(value)
+    }
+
     override fun setShape(
         view: RnMapboxToolkitShapeSource?,
         shape: String?

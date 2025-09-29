@@ -1,9 +1,14 @@
 export type ShapeSourceProps = {
   /**
+   * The URL of the GeoJSON source.
+   */
+  url?: string;
+
+  /**
    * Inline GeoJSON.
    * If [shape] is invalid - `onMapLoadingError` with `type = source` will be invoked.
    */
-  shape: GeoJSON.FeatureCollection | GeoJSON.Feature;
+  shape?: GeoJSON.FeatureCollection | GeoJSON.Feature;
   /**
    * the ID of the source
    */

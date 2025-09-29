@@ -10,7 +10,6 @@ import {
   type CameraRef,
   type ShapeSourceRef,
 } from 'rn-mapbox-toolkit';
-import shapes from '../utils/geojson.json';
 
 export default function MapCluster() {
   const cameraRef = React.useRef<CameraRef | null>(null);
@@ -66,7 +65,8 @@ export default function MapCluster() {
         <Camera ref={cameraRef} />
         <ShapeSource
           ref={shapeSourceRef}
-          shape={shapes as GeoJSON.FeatureCollection}
+          url="https://www.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson"
+          // shape={shapes as GeoJSON.FeatureCollection}
           sourceID="source-paris"
           onPress={onPress}
           cluster={true}

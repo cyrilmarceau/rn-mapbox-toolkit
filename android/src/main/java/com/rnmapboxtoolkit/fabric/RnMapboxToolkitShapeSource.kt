@@ -37,6 +37,7 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
     }
 
     private var sourceID: String = "default-source-id"
+    private var geoUrl: String? = null
     private var shape: String? = null
     private var cluster: Boolean = false
     private var clusterRadius: Long = 50
@@ -201,6 +202,9 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
         }
 
         removeExisting(mapView, style)
+
+
+
         createSource(style)
         addChildLayers(mapView)
     }
@@ -219,13 +223,20 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
     }
 
     private fun createSource(style: Style) {
-        shape?.let { shapeData ->
-            val sourceBuilder = createGeoJsonBuilder(shapeData)
-            sourceBuilder?.let { it ->
-                val source = buildSource(it, style)
-                addSourceToStyle(style, source)
-            }
+        val sourceBuilder = geoUrl?.let { url ->
+            createUrlGeoJsonBuilder(url)
+        } ?: shape?.let { shapeData ->
+            createGeoJsonBuilder(shapeData)
         }
+
+        sourceBuilder?.let { builder ->
+            val source = buildSource(builder, style)
+            addSourceToStyle(style, source)
+        }
+    }
+
+    private fun createUrlGeoJsonBuilder(geoJsonUrl: String): GeoJsonSource.Builder? {
+        return GeoJsonSource.Builder(sourceID).data(geoJsonUrl)
     }
 
     private fun createGeoJsonBuilder(shapeData: String): GeoJsonSource.Builder? {
@@ -402,6 +413,12 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
             val width = it.getDouble("width")
             val height = it.getDouble("height")
             hitSlop = HitSlop(width, height)
+        }
+    }
+
+    fun setUrl(value: String?) {
+        if (geoUrl != value) {
+            geoUrl = value
         }
     }
 
