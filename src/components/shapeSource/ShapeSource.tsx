@@ -46,14 +46,14 @@ const ShapeSource = React.forwardRef<ShapeSourceRef, ShapeSourceProps>(
 
           seen.has(layerID) ? duplicate.push(layerID) : seen.add(layerID);
         }
-
-        if (duplicate.length > 0) {
-          console.error(
-            `Found duplicate layer ID \nSourceID => "${props.sourceID}" \nIdentified layerID =>`,
-            duplicate
-          );
-        }
       });
+
+      if (duplicate.length > 0) {
+        console.error(
+          `Found duplicate layer ID \nSourceID => "${props.sourceID}" \nIdentified layerID =>`,
+          duplicate
+        );
+      }
     }, [props.children, props.sourceID]);
 
     const onShapePressed = (
@@ -83,7 +83,9 @@ const ShapeSource = React.forwardRef<ShapeSourceRef, ShapeSourceProps>(
           offset
         );
       } catch (error) {
-        throw new Error('Failed to getGeoJsonClusterLeaves');
+        throw new Error(
+          `Failed to getGeoJsonClusterLeaves: ${error instanceof Error ? error.message : 'Unknown error'}`
+        );
       }
     };
 
@@ -103,7 +105,9 @@ const ShapeSource = React.forwardRef<ShapeSourceRef, ShapeSourceProps>(
           JSONFeature
         );
       } catch (error) {
-        throw new Error('Failed to getGeoJsonClusterLeaves');
+        throw new Error(
+          `Failed to getGeoJsonClusterExpansionZoom: ${error instanceof Error ? error.message : 'Unknown error'}`
+        );
       }
     };
 
@@ -123,7 +127,9 @@ const ShapeSource = React.forwardRef<ShapeSourceRef, ShapeSourceProps>(
           JSONFeature
         );
       } catch (error) {
-        throw new Error('Failed to getGeoJsonClusterLeaves');
+        throw new Error(
+          `Failed to getGeoJsonClusterChildren: ${error instanceof Error ? error.message : 'Unknown error'}`
+        );
       }
     };
 
