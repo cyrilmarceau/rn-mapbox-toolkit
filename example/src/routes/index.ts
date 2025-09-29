@@ -11,6 +11,8 @@ import MapLineLayer from '../screens/MapLineLayer';
 import MapSettings from '../screens/MapSettings';
 import MapSkyLayer from '../screens/MapSkyLayer';
 import MapFillExtrusionLayer from '../screens/MapFillExtrusionLayer';
+import MapHeatmapLayer from '../screens/MapHeatmapLayer';
+
 export interface ScreenConfig {
   label: string;
   route: string;
@@ -82,6 +84,11 @@ const SCREENS: ScreenConfig[] = [
     label: 'MapFillExtrusionLayer',
     route: 'MapFillExtrusionLayer',
     component: MapFillExtrusionLayer,
+  },
+  {
+    label: 'MapHeatmapLayer',
+    route: 'MapHeatmapLayer',
+    component: MapHeatmapLayer,
   },
 ];
 

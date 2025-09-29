@@ -5,28 +5,28 @@ import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.ViewManagerDelegate
-import com.facebook.react.viewmanagers.RnMapboxToolkitBackgroundLayerManagerDelegate
-import com.facebook.react.viewmanagers.RnMapboxToolkitBackgroundLayerManagerInterface
+import com.facebook.react.viewmanagers.RnMapboxToolkitHeatmapLayerManagerDelegate
+import com.facebook.react.viewmanagers.RnMapboxToolkitHeatmapLayerManagerInterface
 import com.rnmaps.fabric.event.OnLayerStyleErrorEvent
 
-@ReactModule(name = RnMapboxToolkitBackgroundLayerManager.NAME)
-class RnMapboxToolkitBackgroundLayerManager :
-    SimpleViewManager<RnMapboxToolkitBackgroundLayer>(),
-    RnMapboxToolkitBackgroundLayerManagerInterface<RnMapboxToolkitBackgroundLayer> {
+@ReactModule(name = RnMapboxToolkitHeatmapLayerManager.NAME)
+class RnMapboxToolkitHeatmapLayerManager :
+    SimpleViewManager<RnMapboxToolkitHeatmapLayer>(),
+    RnMapboxToolkitHeatmapLayerManagerInterface<RnMapboxToolkitHeatmapLayer> {
 
     override fun getName(): String {
         return NAME
     }
 
-    private val mDelegate: ViewManagerDelegate<RnMapboxToolkitBackgroundLayer> =
-        RnMapboxToolkitBackgroundLayerManagerDelegate(this)
+    private val mDelegate: ViewManagerDelegate<RnMapboxToolkitHeatmapLayer> =
+        RnMapboxToolkitHeatmapLayerManagerDelegate(this)
 
-    override fun getDelegate(): ViewManagerDelegate<RnMapboxToolkitBackgroundLayer>? {
+    override fun getDelegate(): ViewManagerDelegate<RnMapboxToolkitHeatmapLayer>? {
         return mDelegate
     }
 
-    public override fun createViewInstance(context: ThemedReactContext): RnMapboxToolkitBackgroundLayer {
-        return RnMapboxToolkitBackgroundLayer(context)
+    public override fun createViewInstance(context: ThemedReactContext): RnMapboxToolkitHeatmapLayer {
+        return RnMapboxToolkitHeatmapLayer(context)
     }
 
     override fun getExportedCustomDirectEventTypeConstants(): Map<String?, Any?>? {
@@ -34,44 +34,51 @@ class RnMapboxToolkitBackgroundLayerManager :
             OnLayerStyleErrorEvent.Companion.EVENT_NAME to mapOf("registrationName" to OnLayerStyleErrorEvent.Companion.EVENT_NAME),
         )
     }
-
-
+    
     override fun setLayerID(
-        view: RnMapboxToolkitBackgroundLayer?,
+        view: RnMapboxToolkitHeatmapLayer?,
         value: String?
     ) {
         view?.setLayerID(value)
     }
 
+    override fun setSourceID(
+        view: RnMapboxToolkitHeatmapLayer?,
+        value: String?
+    ) {
+        view?.setSourceID(value)
+    }
+
     override fun setMinZoom(
-        view: RnMapboxToolkitBackgroundLayer?,
+        view: RnMapboxToolkitHeatmapLayer?,
         value: Double
     ) {
         view?.setMinZoom(value)
     }
 
     override fun setMaxZoom(
-        view: RnMapboxToolkitBackgroundLayer?,
+        view: RnMapboxToolkitHeatmapLayer?,
         value: Double
     ) {
         view?.setMaxZoom(value)
     }
 
+
     override fun setLayerStyle(
-        view: RnMapboxToolkitBackgroundLayer?,
+        view: RnMapboxToolkitHeatmapLayer?,
         value: String?
     ) {
         view?.setLayerStyle(value)
     }
 
     override fun setFilter(
-        view: RnMapboxToolkitBackgroundLayer?,
+        view: RnMapboxToolkitHeatmapLayer?,
         value: Dynamic?
     ) {
         view?.setFilter(value)
     }
 
     companion object {
-        const val NAME = "RnMapboxToolkitBackgroundLayer"
+        const val NAME = "RnMapboxToolkitHeatmapLayer"
     }
 }

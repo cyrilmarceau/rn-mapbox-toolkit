@@ -3,20 +3,24 @@ package com.rnmapboxtoolkit.fabric
 
 import android.annotation.SuppressLint
 import com.facebook.react.uimanager.ThemedReactContext
-import com.mapbox.maps.extension.style.layers.generated.BackgroundLayer
+import com.mapbox.maps.extension.style.layers.generated.HeatmapLayer
 
 @SuppressLint("ViewConstructor")
-class RnMapboxToolkitBackgroundLayer(context: ThemedReactContext) :
-    AbstractLayer<BackgroundLayer>(context) {
+class RnMapboxToolkitHeatmapLayer(context: ThemedReactContext) :
+    AbstractLayer<HeatmapLayer>(context) {
     companion object {
-        const val TAG = "BackgroundLayer"
+        const val TAG = "HeatmapLayer"
     }
 
     override fun createLayer(
         layerId: String,
         sourceId: String?
-    ): BackgroundLayer {
-        return BackgroundLayer(layerId)
+    ): HeatmapLayer {
+        requireNotNull(sourceId) {
+            "HeatmapLayer requires a sourceId"
+        }
+        
+        return HeatmapLayer(layerId, sourceId)
     }
 }
 
