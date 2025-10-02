@@ -81,6 +81,12 @@ import SkyLayer, {
   type SkyLayerStyle,
 } from './components/skyLayer';
 
+import Images, {
+  type ImagesProps,
+  type MapboxImage,
+  type MapboxImages,
+} from './components/images';
+
 export {
   BackgroundLayer,
   BuildingLayer,
@@ -91,6 +97,7 @@ export {
   FillLayer,
   HeatmapLayer,
   Hillshade,
+  Images,
   LineLayer,
   MapView,
   RasterLayer,
@@ -116,6 +123,9 @@ export {
   type HeatmapLayerStyle,
   type HillshadeLayerProps,
   type HillshadeLayerStyle,
+  type ImagesProps,
+  type MapboxImage,
+  type MapboxImages,
   type LineLayerProps,
   type LineLayerStyle,
   type MapViewRef,
