@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, StyleSheet } from 'react-native';
 import {
   Camera,
+  Hillshade,
   MapView,
   RasterDemSource,
   Terrain,
@@ -42,6 +43,7 @@ export default function MapRasterDemSource() {
           sourceID="raster-dem-source"
           url="mapbox://mapbox.mapbox-terrain-dem-v1"
         >
+          <Hillshade sourceID="raster-dem-source" layerID="hillshade-layer" />
           <Terrain sourceID="raster-dem-source" exaggeration={2.0} />
         </RasterDemSource>
       </MapView>

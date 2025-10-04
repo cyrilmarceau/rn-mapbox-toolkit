@@ -10,6 +10,7 @@ import com.rnmapboxtoolkit.fabric.RnMapboxToolkitCircleLayerManager
 import com.rnmapboxtoolkit.fabric.RnMapboxToolkitFillExtrusionLayerManager
 import com.rnmapboxtoolkit.fabric.RnMapboxToolkitFillLayerManager
 import com.rnmapboxtoolkit.fabric.RnMapboxToolkitHeatmapLayerManager
+import com.rnmapboxtoolkit.fabric.RnMapboxToolkitHillShadeLayerManager
 import com.rnmapboxtoolkit.fabric.RnMapboxToolkitImagesManager
 import com.rnmapboxtoolkit.fabric.RnMapboxToolkitLineLayerManager
 import com.rnmapboxtoolkit.fabric.RnMapboxToolkitRasterDemSourceManager
@@ -39,6 +40,7 @@ class RnMapboxToolkitViewPackage : ReactPackage {
             RnMapboxToolkitImagesManager(),
             RnMapboxToolkitRasterDemSourceManager(),
             RnMapboxToolkitTerrainManager(),
+            RnMapboxToolkitHillShadeLayerManager()
         )
     }
 
