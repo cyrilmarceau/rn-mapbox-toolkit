@@ -202,9 +202,7 @@ class RnMapboxToolkitShapeSource(context: ThemedReactContext) : AbstractMapFeatu
         }
 
         removeExisting(mapView, style)
-
-
-
+        
         createSource(style)
         addChildLayers(mapView)
     }

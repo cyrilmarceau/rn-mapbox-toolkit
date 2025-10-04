@@ -12,9 +12,11 @@ import com.rnmapboxtoolkit.fabric.RnMapboxToolkitFillLayerManager
 import com.rnmapboxtoolkit.fabric.RnMapboxToolkitHeatmapLayerManager
 import com.rnmapboxtoolkit.fabric.RnMapboxToolkitImagesManager
 import com.rnmapboxtoolkit.fabric.RnMapboxToolkitLineLayerManager
+import com.rnmapboxtoolkit.fabric.RnMapboxToolkitRasterDemSourceManager
 import com.rnmapboxtoolkit.fabric.RnMapboxToolkitShapeSourceManager
 import com.rnmapboxtoolkit.fabric.RnMapboxToolkitSkyLayerManager
 import com.rnmapboxtoolkit.fabric.RnMapboxToolkitSymbolLayerManager
+import com.rnmapboxtoolkit.fabric.RnMapboxToolkitTerrainManager
 import com.rnmapboxtoolkit.fabric.RnMapboxToolkitViewManager
 import com.rnmapboxtoolkit.modules.NativeCameraModule
 import com.rnmapboxtoolkit.modules.NativeMapViewModule
@@ -34,7 +36,9 @@ class RnMapboxToolkitViewPackage : ReactPackage {
             RnMapboxToolkitFillExtrusionLayerManager(),
             RnMapboxToolkitHeatmapLayerManager(),
             RnMapboxToolkitSymbolLayerManager(),
-            RnMapboxToolkitImagesManager()
+            RnMapboxToolkitImagesManager(),
+            RnMapboxToolkitRasterDemSourceManager(),
+            RnMapboxToolkitTerrainManager(),
         )
     }
 

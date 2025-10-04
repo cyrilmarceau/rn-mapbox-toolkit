@@ -19,6 +19,10 @@ import FillLayer, {
   type FillLayerStyle,
 } from './components/fillLayer';
 
+import RasterDemSource, {
+  type RasterDemSourceProps,
+} from './components/rasterDemSource';
+
 import LineLayer, {
   type LineLayerProps,
   type LineLayerStyle,
@@ -87,6 +91,8 @@ import Images, {
   type MapboxImages,
 } from './components/images';
 
+import Terrain, { type TerrainProps } from './components/terrain';
+
 export {
   BackgroundLayer,
   BuildingLayer,
@@ -100,11 +106,13 @@ export {
   Images,
   LineLayer,
   MapView,
+  RasterDemSource,
   RasterLayer,
   RasterParticleLayer,
   ShapeSource,
   SkyLayer,
   SymbolLayer,
+  Terrain,
   type BackgroundLayerProps,
   type BackgroundLayerStyle,
   type BuildingLayerProps,
@@ -124,10 +132,10 @@ export {
   type HillshadeLayerProps,
   type HillshadeLayerStyle,
   type ImagesProps,
-  type MapboxImage,
-  type MapboxImages,
   type LineLayerProps,
   type LineLayerStyle,
+  type MapboxImage,
+  type MapboxImages,
   type MapViewRef,
   type OnMapClickEvent,
   type OnMapIdleEvent,
@@ -137,6 +145,7 @@ export {
   type OnSourceRemovedEvent,
   type OnStyleDataEvent,
   type OnStyleImageMissingEvent,
+  type RasterDemSourceProps,
   type RasterLayerProps,
   type RasterLayerStyle,
   type RasterParticleLayerProps,
@@ -147,4 +156,5 @@ export {
   type SkyLayerStyle,
   type SymbolLayerProps,
   type SymbolLayerStyle,
+  type TerrainProps,
 };

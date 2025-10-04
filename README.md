@@ -33,8 +33,7 @@ Inside `example/App.tsx` multiple screen exist with diverse example for each com
 ---
 
 TODO:
-- SymbolLayer
-- RasterParticleLayer
 - RasterLayer
 - HillshadeLayer
+- RasterParticleLayer
 - ClipLayer

@@ -13,7 +13,7 @@ import MapSkyLayer from '../screens/MapSkyLayer';
 import MapFillExtrusionLayer from '../screens/MapFillExtrusionLayer';
 import MapHeatmapLayer from '../screens/MapHeatmapLayer';
 import MapSymbolLayer from '../screens/MapSymbolLayer';
-
+import MapRasterDemSource from '../screens/MapRasterDemSource';
 export interface ScreenConfig {
   label: string;
   route: string;
@@ -95,6 +95,11 @@ const SCREENS: ScreenConfig[] = [
     label: 'MapSymbolLayer',
     route: 'MapSymbolLayer',
     component: MapSymbolLayer,
+  },
+  {
+    label: 'MapRasterDemSource',
+    route: 'MapRasterDemSource',
+    component: MapRasterDemSource,
   },
 ];
 
